@@ -4,8 +4,9 @@ import React, { useState, useRef } from 'react';
 import { useSearchParams, useRouter } from "next/navigation";
 import LoadingText from "../../../scripts/loadingText";
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'; // ← CAMBIO
+import GPayButton from "../../components/GPayButton"; // ajusta ruta
 
-export default function Head_stripe({onError, onSuccess}) {
+export default function Head_stripe({ onError, onSuccess, clientSecret }) {
     const [email, setEmail] = useState("");
     const stripe = useStripe();    
     const elements = useElements();
@@ -72,6 +73,7 @@ export default function Head_stripe({onError, onSuccess}) {
                 </div>
 
                 <div className="rounded-[.35rem] border border-[#7c6583] bg-[#0d0c14] px-10 py-4">
+                    <GPayButton amount={1000} clientSecret={clientSecret} />
                     <PaymentElement /> {/* ← CAMBIO */}
                 </div>
 

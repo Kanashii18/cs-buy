@@ -186,14 +186,15 @@ export default function Method({product}) {
                          {clientSecret && (
                               <Elements stripe={stripePromise} options={{ clientSecret }}>
                                    <Head_stripe
-                                   product={product}
-                                   onError={(error) => {
-                                        setMessage(error);
-                                        setError(true);
-                                   }}
-                                   onSuccess={() => {
-                                        setError(false);
-                                   }}
+                                        product={product}
+                                        clientSecret={clientSecret} // ← AÑADE ESTO
+                                        onError={(error) => {
+                                             setMessage(error);
+                                             setError(true);
+                                        }}
+                                        onSuccess={() => {
+                                             setError(false);
+                                        }}
                                    />
                               </Elements>
                          )}
