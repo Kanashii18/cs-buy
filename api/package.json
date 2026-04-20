@@ -1,0 +1,34 @@
+{
+  "name": "project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "api": "node --watch api.js",
+    "dev": "node --watch api.js",
+    "set": "git add . && git commit -m 'reset' && git push -u origin master",
+    "build": "npm prune --production",
+    "start": "NODE_ENV=production node api.js"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^9.3.1",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/multipart": "^8.3.1",
+    "@fastify/static": "^7.0.1",
+    "@google-cloud/vision": "^5.3.3",
+    "axios": "^1.11.0",
+    "canvas": "^3.2.1",
+    "cloudinary": "^2.7.0",
+    "fastify": "^4.24.3",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.3",
+    "publitio_js_sdk": "^1.1.5",
+    "socket.io": "^4.8.1",
+    "stripe": "^18.4.0",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "bcrypt": "^6.0.0",
+    "sass": "^1.89.2"
+  }
+}
