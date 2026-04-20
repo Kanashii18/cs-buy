@@ -4,14 +4,13 @@ import React, { useState, useRef } from 'react';
 import { useSearchParams, useRouter } from "next/navigation";
 import LoadingText from "../../../scripts/loadingText";
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'; // ← CAMBIO
-import GPayButton from "../../components/GPayButton"; // ajusta ruta
+import GPayButton from "./GPayButton"; // ajusta ruta
 
 export default function Head_stripe({ onError, onSuccess, clientSecret }) {
     const [email, setEmail] = useState("");
     const stripe = useStripe();    
     const elements = useElements();
     const [isProcessing, setIsProcessing] = useState(false);
-    const router = useRouter();
     const submittingRef = useRef(false);
 
     const setError = (error) => {
