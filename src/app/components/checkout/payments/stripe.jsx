@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useSearchParams, useRouter } from "next/navigation";
 import LoadingText from "../../../scripts/loadingText";
-import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { PaymentElement, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 export default function Head_stripe({onError, onSuccess}) {
     const [email, setEmail] = useState("");
