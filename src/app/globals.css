@@ -1,0 +1,228 @@
+@import "tailwindcss";
+@config "../../tailwind.config.js";
+
+@layer base {
+     @keyframes diagonalWave {
+          0% { background-position: 0% 0%; }
+          100% { background-position: 100% 100%; }
+     }
+     @font-face {
+          font-family: "banner";
+          src: url("/assets/fonts/banner/TALIWANGKE.ttf") format("truetype");
+          font-display: block;
+     }    
+     /* Tailwind no tiene utilidad para: input[type=number]::-webkit-inner-spin-button / ::-webkit-outer-spin-button */
+     input[type=number]::-webkit-inner-spin-button,
+     input[type=number]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+     }
+
+     /* Tailwind no tiene utilidad para: input[type=number] { -moz-appearance: textfield } */
+     input[type=number] {
+          -moz-appearance: textfield;
+     }
+
+     /* Tailwind no puede aplicar de forma confiable: ::placeholder con position absolute + transform centrado */
+     textarea::placeholder {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+     }
+     * {
+          -ms-overflow-style: none; /* IE / Edge */
+          scrollbar-width: none;    /* Firefox */
+     }
+
+     *::-webkit-scrollbar {
+          display: none;            /* Chrome / Safari */
+     }
+     input{
+          outline:none
+     }
+}
+
+
+@layer components {
+     /* Color for sub options like create product - my orders etc... */
+     :root {
+          --text_suboption : #ffffff85;
+     }
+     :root {
+          --text_order : #e0e0e0b0;
+     }
+     :root {
+          --text_product : #e7ffe8ce;
+     }
+     
+     
+     /* Centralize textarea placeholder text */
+     .description-textarea::placeholder {
+          @apply text-white/50 text-center;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+     }
+
+     .shape-square {
+          @apply w-10 h-10 bg-pink-500 animate-rotate;
+     }
+
+     .shape-circle {
+          @apply w-14 h-14 rounded-full bg-cyan-400 animate-pulseShape;
+     }
+
+     .shape-triangle {
+          width: 0;
+          height: 0;
+          border-left: 25px solid transparent;
+          border-right: 25px solid transparent;
+          border-bottom: 50px solid #7209b7;
+          animation: float 12s infinite ease-in-out;
+     }
+
+     .shape-rectangle {
+          @apply w-20 h-8 bg-blue-600 animate-slide;
+     }
+
+     .star {
+          --star-color: #7209b7;
+          --star-tail-length: 6em;
+          --star-tail-height: 2px;
+          --star-width: calc(var(--star-tail-length) / 6);
+          --fall-duration: 9s;
+          --tail-fade-duration: var(--fall-duration);
+
+          position: absolute;
+          top: var(--top-offset);
+          left: 0;
+          width: var(--star-tail-length);
+          height: var(--star-tail-height);
+          color: var(--star-color);
+          background: linear-gradient(45deg, currentColor, transparent);
+          border-radius: 9999px;
+          filter: drop-shadow(0 0 6px currentColor);
+          transform: translate3d(104em, 0, 0);
+
+          animation:
+          fall var(--fall-duration) var(--fall-delay) linear infinite,
+          tail-fade var(--tail-fade-duration) var(--fall-delay) ease-out infinite;
+     }
+
+     @media (max-width: 750px) {
+          .star {
+               animation: fall var(--fall-duration) var(--fall-delay) linear infinite;
+          }
+     }
+
+     .star::before,
+     .star::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: calc(var(--star-width) / -2);
+          width: var(--star-width);
+          height: 100%;
+          background: linear-gradient(45deg, transparent, currentColor, transparent);
+          border-radius: inherit;
+          animation: blink 2s linear infinite;
+     }
+
+     .star::before {
+          transform: rotate(45deg);
+     }
+
+     .star::after {
+          transform: rotate(-45deg);
+     }
+}
+
+@layer utilities {
+
+     @keyframes ball-spin-clockwise {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: .15; transform: scale(.8); }
+     }
+     .spinner > div:nth-child(1) { top: 5%; left: 50%; }
+     .spinner > div:nth-child(2) { top: 18%; left: 82%; }
+     .spinner > div:nth-child(3) { top: 50%; left: 95%; }
+     .spinner > div:nth-child(4) { top: 82%; left: 82%; }
+     .spinner > div:nth-child(5) { top: 95%; left: 50%; }
+     .spinner > div:nth-child(6) { top: 82%; left: 18%; }
+     .spinner > div:nth-child(7) { top: 50%; left: 5%; }
+     .spinner > div:nth-child(8) { top: 18%; left: 18%; }
+
+
+     /* windows error set product */
+     @keyframes slideDown {
+          from {
+               transform: translateY(-20px);
+               opacity: 0;
+          }
+          to {
+               transform: translateY(0);
+               opacity: 1;
+          }
+     }
+
+     @keyframes slideUp {
+          from {
+               transform: translateY(0);
+               opacity: 1;
+          }
+          to {
+               transform: translateY(-20px);
+               opacity: 0;
+          }
+     }
+     .no-scrollbar::-webkit-scrollbar {
+          display: none;
+     }
+
+     .no-scrollbar {
+          scrollbar-width: none;
+     }
+     @keyframes fall {
+          to {
+               transform: translate3d(-30em, 0, 0);
+          }
+     }
+
+     @keyframes tail-fade {
+          0%, 50% {
+               width: var(--star-tail-length);
+               opacity: 1;
+          }
+          70%, 80% {
+               width: 0;
+               opacity: 0.4;
+          }
+          100% {
+               width: 0;
+               opacity: 0;
+          }
+     }
+
+     @keyframes blink {
+          50% {
+               opacity: 0.6;
+          }
+     }
+}
+
+
+.font-banner {
+     font-family: "banner";
+}
+
+.font-options {
+     font-family: var(--font-options);
+}
+.font-product {
+     font-family: var(--font-product);
+}
+.font-content {
+     font-family: var(--font-content);
+}

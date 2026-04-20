@@ -1,0 +1,40 @@
+.delete_alert-verify {
+    background-color: #0000008a;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete-alert {
+     background-color: #4b317278;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.45rem;
+    border-radius: 4px;
+}
+.goback-option {
+    display: flex;
+    justify-content: right;
+}
+.goback-option img{
+    background-color: #ff000087;
+    border-radius: 5px;
+}
+.alert_text-value {
+    background-color: #0d09115e;
+    padding: 2rem .6rem;
+    font-family: 'Roboto';
+}
+.summit_alert {
+     cursor: pointer;
+     width: min-content;
+     border-radius: 3.5px;
+     padding: .3rem 1.3rem;
+     font-family: "Roboto";
+}
