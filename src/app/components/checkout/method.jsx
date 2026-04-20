@@ -5,7 +5,6 @@ import Head_stripe from './payments/stripe';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 const loaderSvg = "../assets/icons/loader/payment_loader.svg";
-import { useSearchParams, useRouter } from "next/navigation";
 
 const testing = true;
 const stripePromise = loadStripe(testing ? 
@@ -15,32 +14,10 @@ const stripePromise = loadStripe(testing ?
 );
 
 export default function Method({product}) {
-     const param = useSearchParams();
      const [loading, setLoading] = useState(false);
      const [active_error, setError] = useState(false);
      const [msg_error, setMessage] = useState(null);
      const [visiblePaymentMethod, setVisiblePaymentMethod] = useState(null); // Guardamos la opción visible
-
-     const [clientSecret, setClientSecret] = useState(null);
-
-     // 🔥 AGREGA ESTE useEffect
-     useEffect(() => {
-          if (visiblePaymentMethod === 'credit-card' && !clientSecret) {
-               fetch(`/api/verify/checkout/create-payment-intent?session_id=${param.get("session_id")}`, {
-                    credentials: "include",
-                    cache: "no-store",
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ product }),
-               })
-               .then(res => res.json())
-               .then(data => setClientSecret(data.clientSecret))
-               .catch(() => {
-                    setMessage("error");
-                    setError(true);
-               });
-          }
-     }, [visiblePaymentMethod]);
 
      const handleBack = () => {
           window.history.back();
@@ -181,23 +158,19 @@ export default function Method({product}) {
 
                          {/* max-height transition needs CSS */}
                          <div
-                         className={`max-h-0 overflow-hidden [transition:max-height_0.5s_ease-in-out] ${visiblePaymentMethod === 'credit-card' ? 'max-h-[500px]' : ''}`}
+                              className={`max-h-0 overflow-hidden [transition:max-height_0.5s_ease-in-out] ${visiblePaymentMethod === 'credit-card' ? 'max-h-[500px]' : ''}`}
                          >
-                         {clientSecret && (
-                              <Elements stripe={stripePromise} options={{ clientSecret }}>
-                                   <Head_stripe
-                                        product={product}
-                                        clientSecret={clientSecret} // ← AÑADE ESTO
-                                        onError={(error) => {
+                              <Elements stripe={stripePromise}>
+                                   <Head_stripe product={product} 
+                                        onError={(error)=>{ 
                                              setMessage(error);
-                                             setError(true);
+                                             setError(true); 
                                         }}
-                                        onSuccess={() => {
+                                        onSuccess={()=>{
                                              setError(false);
                                         }}
                                    />
                               </Elements>
-                         )}
                          </div>
 
                          <div
