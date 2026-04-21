@@ -6,7 +6,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 const loaderSvg = "../assets/icons/loader/payment_loader.svg";
 
-const testing = true;
+const testing = false;
 const stripePromise = loadStripe(testing ? 
      "pk_test_51RuTndBZL3uHJlLtnFRg17FDRgk0umD0C8ZxaWPNeR8IitM2GynHSmI9fV8moPMkJCb7550VqYByEnhirlVf2THI00vnkxCN6O" 
      :
