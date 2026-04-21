@@ -97,7 +97,7 @@ export default function Head_stripe({onError, onSuccess}) {
                             if(!paymentIntent) return setError("Declined Card");
                             if (paymentIntent.status === "requires_capture") {
                                 console.log('Payment successful');
-                                await fetch(`/api/verify/checkout/stripe/payment-status?session_id=${param.get("session_id")}`, {
+                                const res = await fetch(`/api/verify/checkout/stripe/payment-status?session_id=${param.get("session_id")}`, {
                                     method: 'POST',
                                     credentials: "include",
                                     headers: {
@@ -108,6 +108,9 @@ export default function Head_stripe({onError, onSuccess}) {
                                         status: paymentIntent.status,
                                     })
                                 }).catch((err)=>{ setError("error"); })
+                                if(res.ok) {
+                                    router.push("/dashboard/order");
+                                }
                             } else {
                                 console.log('Payment still pending');
                             }

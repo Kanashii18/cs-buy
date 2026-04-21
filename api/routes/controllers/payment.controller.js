@@ -176,13 +176,14 @@ export function payment_Controller(db, io, users) {
                     if( paymentIntent.status === "requires_capture" || paymentIntent.status === "requires_action" ){
                          try{ 
                               return reply.code(200).send({ id: paymentIntent.client_secret, status:paymentIntent.status, payment_id:paymentIntent.id });
-                         }catch{
-                              return reply.code(500).send({ error: "Server Error" });
+                         }catch(err){
+                              console.log(err);
+                              return reply.code(500).send({ error: err });
                          }
                     }
                } catch (error) {
-                    console.log(error);
-                    return reply.code(500).send({ error: "Try again later"});
+                    console.log(error.t);
+                    return reply.code(500).send({ error: error});
                }
           },
           // HAY QUE ADAPTARLO AQUI TMB MANITO XD
