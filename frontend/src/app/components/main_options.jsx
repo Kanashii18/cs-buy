@@ -84,13 +84,13 @@ export default function UseMain({Main_content}){
         };
     }, [ loading_socket, loggedIn, user]);
 
-    // if (loading || !newSocket) {
-    //     return <>
-    //             {/* <Top_bar unread_count={unread_value} unread_notification={unread_notification} handlelogout={handleLogout} loggedIn={loggedIn} user={loggedIn ? user : {}}/> */}
-    //             <LoadingScreen/>
-    //             {<Foot/> ? <Foot/> : <div>Cargando...</div>}
-    //         </>;
-    // }
+    if (loading || !newSocket) {
+        return <>
+                {/* <Top_bar unread_count={unread_value} unread_notification={unread_notification} handlelogout={handleLogout} loggedIn={loggedIn} user={loggedIn ? user : {}}/> */}
+                <LoadingScreen/>
+                {<Foot/> ? <Foot/> : <div>Cargando...</div>}
+            </>;
+    }
 
     return (
         <>

@@ -3,7 +3,7 @@ import Email_input from "../input/email-input";
 import Password_input from "../input/password-input";
 import Terms from "./terms";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 const loaderSvg = "../assets/icons/loader/credential_loader.svg";
 
 export default function Container_Main(){
@@ -14,6 +14,10 @@ export default function Container_Main(){
      const [termsneed, setTermsneed] = useState(true);
      const [loading, setLoading] = useState(false);
      const router = useRouter();
+     const params = useSearchParams();
+
+     const return_to = params.get("return");
+     console.log(return_to);
 
      // ========================= || Call Api to Register || ========================= //
 
@@ -40,7 +44,7 @@ export default function Container_Main(){
                     return setError(data.error || "Registro inválido");
                }
 
-               // normalizar session (si el endpoint devuelve loggedIn)
+               // normalizar session
 
                const payload = {
                     ts: Date.now(),
@@ -54,7 +58,7 @@ export default function Container_Main(){
                };
 
                sessionStorage.setItem("session-cache", JSON.stringify(payload));
-               router.push("/?section=global");
+               router.push(return_to || "/?section=global");
                return;
 
           } catch (err) {
@@ -133,7 +137,7 @@ export default function Container_Main(){
                     <p className="text-white text-sm text-center whitespace-nowrap">
                     ¿Ya tienes cuenta?
                          <a
-                              href="/login"
+                              href={`/login${return_to ? `?return=${return_to}` : ""}`}
                               className="ml-1 text-purple-400 hover:underline"
                          >
                               Inicia sesión aquí!

@@ -33,7 +33,12 @@ import mysql from "./scripts/db.js";
 const db = mysql.db;
 
 const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev });
+// dir: indicamos la ruta de fronted a partir de la raiz, ej backend/api/api.ks | frontend/
+const app = next({ 
+     dev,
+     dir:"./frontend"
+});
+
 const handle = app.getRequestHandler();
 
 await app.prepare();

@@ -126,45 +126,56 @@ const BanController = {
 };
 
 export async function isBanned(db, { userId = "", deviceId = "", ip = "" }) {
-  const rows = await db(
-    `SELECT 1
-       FROM Bans
-      WHERE (
-              (subject_type='user'   AND subject_value=?)
-           OR (subject_type='device' AND subject_value=?)
-           OR (subject_type='ip'     AND subject_value=?)
-            )
-        AND (expires_at IS NULL OR expires_at > NOW())
-      LIMIT 1`,
-    [userId, deviceId, ip]
-  );
-  return rows.length > 0;
+     console.log("las weas:", ip, deviceId);
+
+     const rows = await db(
+          `SELECT 1
+               FROM Bans
+               WHERE (
+                    (subject_type='user_id'   AND subject_value=?)
+                    AND (subject_type='device' AND subject_value=?)
+                    AND (subject_type='ip'     AND subject_value=?)
+                    )
+               AND (expires_at IS NULL OR expires_at > NOW())
+               LIMIT 1`,
+          [userId, deviceId, ip]
+     );
+     console.log(rows.length);
+     return rows.length > 0;
 }
 
 const conditional = {
-     email_conditional: (email,reply) => {
-          const localPart = email.split("@")[0];
-          if (localPart.length < 8) {
-               return {error:true,message:"Your email must have at least 8 characters before '@'." };
-          }else if (localPart.length > 55){
-               return {error:true,message:"Your email cannot have more than 55 characters."};
+     email_conditional: (email) => {
+          let valid_email = /^[A-Za-z0-9._%+-]+@[A-Za-z]{1,6}\.[A-Za-z]{1,3}$/;
+          valid_email = valid_email.test(email);
+          
+          let valid_range = /^[A-Za-z0-9._%+-]{8,}@/;
+          valid_range = valid_range.test(email);
+
+          if (!valid_email) {
+               return "Your email have a invalid structure. example@gmail.com";
           }
-          return {error:false};
+          if (!valid_range) {
+               return "Your email must have at least 8 characters before '@'.";
+          }
+          if (email.length > 55){
+               return "Your email cannot have more than 55 characters.";
+          }
      },
-     password_conditional: (password,reply) => {
+     password_conditional: (password) => {
           if(password.length < 6 || password.length > 30){
-               return {error:true,message:'Your password must contain more than 6 characters and less than 30 characters.' };
-          }else return {error:false};
+               return 'Your password must be between 6 and 30 characters.';
+          }
      },
-     username_conditional: (username,reply) => {
+     username_conditional: (username) => {
           if(username.length >= 16){
-               return {error:true,message:'Your username cannot have more than 16 characters.'}
-          }else return {error:false};
+               return 'Your username cannot have more than 16 characters.';
+          }
      },
-     description_conditional: (description,reply) => {
+     description_conditional: (description) => {
           if(description.length >= 130){
-               return {error:true,message:'Your description cannot have more than y characters.'}
-          }else return {error:false};
+               return 'Your description cannot have more than y characters.';
+          }
      }
 };
 
@@ -202,9 +213,18 @@ export function userController(db, ci) {
            */
           loginUser: async (request, reply) => {
                const { username, password } = request.body;
+
                if (!username || !password) {
-                    return reply.code(400).send({ error: 'Missing username or password fields.' });
+                    return reply.code(400).send({ 
+                         message:"Please provide both username and password.",
+                         error: 'Missing username or password fields.'
+                    });
                }
+
+               // verify that the password are between 6 and 30 characters
+               let error = conditional.password_conditional(password);
+               if (error) return reply.code(400).send({ message: error, error: "Password too short or long" });
+
                const ip = (request.headers["x-forwarded-for"] || request.socket.remoteAddress || "").toString().split(",")[0].trim();
                const deviceId = request.deviceId;
                if (await isBanned(db, { userId: null, deviceId, ip })) {
@@ -220,8 +240,8 @@ export function userController(db, ci) {
                          WHERE username = ? OR email = ?
                     `;
                     const rows = await db(query, [username, username]);
-
-                    if (rows.length <= 0) {
+                    console.log(rows, username, rows?.length);
+                    if (rows?.length <= 0) {
                          return reply.code(400).send({ message: 'Incorrect username/email.', error: 'Invalid credentials' });
                     }
 
@@ -231,10 +251,8 @@ export function userController(db, ci) {
                     if (!ok) {
                          return reply.code(400).send({ message: 'Incorrect Password.', error: 'Invalid credentials' });
                     }
-                    
-                    if (await isBanned(db, { userId: rows.user_id, deviceId, ip })) {
-                         return reply.code(403).send({ error: "Access denied." });
-                    }
+
+                    //linkeamos ip y deviceid al usuario
                     await BanController.linking(db, user.user_id, deviceId, ip);
 
                     const payload = { id: user.user_id, email: user.email, username: user.username, role: user.role };
@@ -263,16 +281,26 @@ export function userController(db, ci) {
            */
           createUser: async (request, reply) => {
                const { email, password } = request.body;
+
                if (!email || !password) {
                     return reply.code(400).send({ error: 'Missing required fields.' });
                }
-               conditional.email_conditional(email,reply);
-               conditional.password_conditional(password,reply);
-               // Verify that the password have 6 letters or more
-               if(password.length < 6){
-                    return reply.code(400).send({ error: 'Password Need to have 6 caracters or more' });
-               }
 
+               const isEmail = email.includes("@");
+
+               isEmail ?
+               (()=>{
+                    let error = conditional.email_conditional(email);
+                    if (error) return reply.code(400).send({ error });
+               })()
+               :
+               (()=>{
+                    let error = conditional.username_conditional(email);
+                    if (error) return reply.code(400).send({ error });
+               })()
+  
+               let error = conditional.password_conditional(password);
+               if (error) return reply.code(400).send({ error });
 
                try {
                     // Check if user already exists
@@ -494,20 +522,20 @@ export function userController(db, ci) {
 
                     try {
                          if (description) {
-                         let { error, message } = conditional.description_conditional(description, reply);
-                         if (error) return reply.code(400).send({ message });
+                              let error = conditional.description_conditional(description);
+                              if (error) return reply.code(400).send({ error });
                          }
                          if (email) {
-                         let { error, message } = conditional.email_conditional(email, reply);
-                         if (error) return reply.code(400).send({ message });
+                              let error = conditional.email_conditional(email);
+                              if (error) return reply.code(400).send({ error });
                          }
                          if (password) {
-                         let { error, message } = conditional.password_conditional(password, reply);
-                         if (error) return reply.code(400).send({ message });
+                              let error = conditional.password_conditional(password);
+                              if (error) return reply.code(400).send({ error });
                          }
                          if (username) {
-                         let { error, message } = conditional.username_conditional(username, reply);
-                         if (error) return reply.code(400).send({ message });
+                              let error = conditional.username_conditional(username);
+                              if (error) return reply.code(400).send({ error });
                          }
 
                          if (username || email) {

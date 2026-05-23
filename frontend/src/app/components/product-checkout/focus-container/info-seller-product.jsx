@@ -19,9 +19,10 @@ export default function Purchase_Container({product,seller, Loadingdiv}){
                headers: { "Content-Type": "application/json" },
                credentials: "include",
                body: JSON.stringify({ product_id: product.product_id })
-          })
+          });
           const data = await res.json();
-          if(data.error === "Unauthorized") return router.push("/login");
+          if(data.error === "Unauthorized") return router.push(`/register?return=/product?id=${product.product_id}`);
+
           router.push(`/product/checkout?session_id=${data.session_id}`);
           setLoading(false);
 

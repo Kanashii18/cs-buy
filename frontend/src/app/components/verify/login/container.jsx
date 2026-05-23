@@ -2,7 +2,7 @@ import Errors from "./../errors/incorrect";
 import EmailInput from "./../input/email-input";
 import PasswordInput from "./../input/password-input";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const loaderSvg = "/assets/icons/loader/credential_loader.svg";
 
@@ -12,7 +12,10 @@ export default function LoginContainer() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+     const params = useSearchParams();
+     
+     const return_to = params.get("return");
+     console.log(return_to);
   const handleSubmit = async (e) => {
      e.preventDefault();
      setLoading(true);
@@ -41,7 +44,7 @@ export default function LoginContainer() {
                          },
                     })
                );
-               router.push("/?section=global");
+               router.push(return_to || "/?section=global");
           } else {
                setError("No se pudo establecer sesión");
           }
@@ -94,7 +97,7 @@ export default function LoginContainer() {
                     <p className="text-white text-sm text-center">
                     Aún no estás registrado?
                          <a
-                              href="/register"
+                              href={`/register${return_to ? `?return=${return_to}` : ""}`}
                               className="ml-1 text-purple-400 hover:underline"
                          >
                               Regístrate aquí!

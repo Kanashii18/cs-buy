@@ -85,10 +85,6 @@ export default function Method({product}) {
                     },
                }).render('#paypal-button-container'); // Renderiza el botón de PayPal
                };
-
-               // return () => {
-               //      document.body.removeChild(script);
-               // };
           }, []);
 
      // Crypto payment handler (Example with Coinbase Commerce)

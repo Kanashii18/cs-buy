@@ -13,10 +13,14 @@ index.html
 backup
 .next
 uploads
+.env
 views
 backup.sql
 testing.db
+
+package-lock.json
 node_modules
+
 dist-ssr
 *.local
 eslint.config.js
