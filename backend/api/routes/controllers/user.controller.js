@@ -126,7 +126,6 @@ const BanController = {
 };
 
 export async function isBanned(db, { userId = "", deviceId = "", ip = "" }) {
-     console.log("las weas:", ip, deviceId);
 
      const rows = await db(
           `SELECT 1
@@ -140,7 +139,7 @@ export async function isBanned(db, { userId = "", deviceId = "", ip = "" }) {
                LIMIT 1`,
           [userId, deviceId, ip]
      );
-     console.log(rows.length);
+
      return rows.length > 0;
 }
 
@@ -240,7 +239,7 @@ export function userController(db, ci) {
                          WHERE username = ? OR email = ?
                     `;
                     const rows = await db(query, [username, username]);
-                    console.log(rows, username, rows?.length);
+
                     if (rows?.length <= 0) {
                          return reply.code(400).send({ message: 'Incorrect username/email.', error: 'Invalid credentials' });
                     }
@@ -410,38 +409,49 @@ export function userController(db, ci) {
            */
           deleteUser: async (request, reply) => {
                const { username, password } = request.body;
+
                if (!username || !password) {
-                    return reply.code(400).send({ error: 'Missing required fields.' });
+                    return reply.code(400).send({ error: "Missing required fields." });
                }
 
                try {
-                    // Check if the user exists in the database
-                    const stmt = `
-                         SELECT * FROM Users WHERE username = ? AND password = ?
+                    const selectUserStmt = `
+                         SELECT * FROM Users
+                         WHERE username = ? AND password = ?
                     `;
-                    const user = await queryDatabase(stmt, [username, password]);
+
+                    const user = await db(selectUserStmt, [username, password]);
 
                     if (user.length === 0) {
-                         return reply.code(400).send({ message: "Incorrect username or password", error: "Invalid credentials" });
+                         return reply.code(400).send({
+                              message: "Incorrect username or password",
+                              error: "Invalid credentials"
+                         });
                     }
 
-                    // Delete the user from the database
-                    const deleteStmt = `
-                         DELETE FROM Users WHERE user_id = ?
+                    const deleteUserStmt = `
+                         DELETE FROM Users
+                         WHERE user_id = ?
                     `;
-                    await queryDatabase(deleteStmt, [user[0].user_id]);
 
-                    // delete related wallet and other data
+                    await db(deleteUserStmt, [user[0].user_id]);
+
                     const deleteWalletStmt = `
-                         DELETE FROM Wallets WHERE user_id = ?
+                         DELETE FROM Wallets
+                         WHERE user_id = ?
                     `;
-                    await queryDatabase(deleteWalletStmt, [user[0].user_id]);
 
-                    return reply.code(200).send({ message: "User successfully deleted" });
+                    await db(deleteWalletStmt, [user[0].user_id]);
+
+                    return reply.code(200).send({
+                         message: "User successfully deleted"
+                    });
 
                } catch (err) {
-                    console.error('Error deleting user:', err);
-                    return reply.code(500).send({ error: 'Server error while deleting user' });
+                    console.error("Error deleting user:", err);
+                    return reply.code(500).send({
+                         error: "Server error while deleting user"
+                    });
                }
           },
           // =============== Modify User =============== //
@@ -501,7 +511,7 @@ export function userController(db, ci) {
 
                     const response = await db(valid_password, [userInfo.id]);
                     const isvalid = await bcrypt.compare(security + (SECRET_PEPPER), response[0].password);
-                    console.log(security, isvalid, response[0].password);
+
 
                     if (!isvalid) {
                          return reply.code(401).send({ message: "Incorrect password" });
@@ -651,7 +661,6 @@ export function userController(db, ci) {
 
                const response = await db(query, [id, id]);
 
-               console.log(response);    
                if (response.length === 0) {
                return reply.code(200).send({ unread: 0 });
                } else {
@@ -666,7 +675,6 @@ export function userController(db, ci) {
                          totalUnread += row.unread_count_user_2;
                     }
                }
-               console.log(totalUnread);
                return reply.code(200).send({ unread: totalUnread });
                }
           },
