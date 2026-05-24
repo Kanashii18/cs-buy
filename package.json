@@ -7,7 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "test":"node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "test":"node --experimental-vm-modules ./node_modules/jest/bin/jest.js backend/**/* --runInBand --verbose",
     "a": "node backend/api/api.js",
     "api": "node --watch api/api.js",
     "dev": "next dev",
