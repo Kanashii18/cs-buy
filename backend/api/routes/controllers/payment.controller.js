@@ -31,52 +31,64 @@ paypal.configure({
 });
 // ========================================================== //
 
-export function payment_Controller(db, io, users) {
+export function payment_Controller(db, io, users, dependencies = {}) {
+     const paymentStripe = dependencies.stripe ?? stripe;
+     const Orders = dependencies.Set_orders ?? Set_orders;
+
      return {
           // ============= || GPAY || ============ //
           gpay_payment: async (request, reply) => {
                try {
                     const { product } = request.body;
 
-                    const paymentIntent = await stripe.paymentIntents.create({
+                    const paymentIntent = await paymentStripe.paymentIntents.create({
                          amount: product.price * 100,
                          currency: "usd",
                          automatic_payment_methods: {
-                         enabled: true,
+                              enabled: true,
                          },
                     });
 
-                    reply.send({
+                    return reply.send({
                          clientSecret: paymentIntent.client_secret,
                     });
                } catch (err) {
-               res.status(500).send({ error: err.message });
+                    return reply.code(500).send({
+                         error: err.message,
+                    });
                }
           },
 
           // ============= || Crypto Payment || ============ //
           crypto_payment: async (request, reply) => {
                const litecoin_network = {
-               messagePrefix: '\x19Litecoin Signed Message:\n',
-               bech32: 'ltc',
-               bip32: {
-               public: 0x019da462,
-               private: 0x019d9cfe,
-               },
-               pubKeyHash: 0x30,
-               scriptHash: 0x32,
-               wif: 0xB0,
+                    messagePrefix: '\x19Litecoin Signed Message:\n',
+                    bech32: 'ltc',
+                    bip32: {
+                         public: 0x019da462,
+                         private: 0x019d9cfe,
+                    },
+                    pubKeyHash: 0x30,
+                    scriptHash: 0x32,
+                    wif: 0xB0,
                };
 
-               // ECPair Initialization 
                const ECPair = ECPairFactory(tinysecp);
 
-               const keyPair = ECPair.makeRandom({ rng: crypto.randomBytes, network: litecoin_network });
+               const keyPair = ECPair.makeRandom({
+                    rng: crypto.randomBytes,
+                    network: litecoin_network,
+               });
+
                const publicKeyCompressed = Buffer.from(keyPair.publicKey);
 
-               const { address: ltcAddress } = payments.p2pkh({ pubkey: publicKeyCompressed, network: litecoin_network });
+               const { address: ltcAddress } = payments.p2pkh({
+                    pubkey: publicKeyCompressed,
+                    network: litecoin_network,
+               });
 
                console.log('Dirección Litecoin (Mainnet):', ltcAddress);
+
                return reply.code(200).send("OK");
           },
 
@@ -104,59 +116,89 @@ export function payment_Controller(db, io, users) {
                     },
                };
 
-               // Crear el pago en PayPal
                paypal.payment.create(payment_data, (error, payment) => {
                     if (error) {
                          console.error(error);
-                         return reply.code(500).send({ error: 'Error creating PayPal payment' });
+
+                         return reply.code(500).send({
+                              error: 'Error creating PayPal payment',
+                         });
                     }
 
-                    // Buscar la URL de aprobación
                     for (let i = 0; i < payment.links.length; i++) {
                          if (payment.links[i].rel === 'approval_url') {
-                              return reply.code(200).send({ approval_url: payment.links[i].href });
+                              return reply.code(200).send({
+                                   approval_url: payment.links[i].href,
+                              });
                          }
                     }
 
-                    return reply.code(500).send({ error: 'Approval URL not found' });
+                    return reply.code(500).send({
+                         error: 'Approval URL not found',
+                    });
                });
 
-               // Si el pago es aprobado, lo capturamos
                if (paymentId && payerId) {
-                    paypal.payment.execute(paymentId, { payer_id: payerId }, (error, payment) => {
-                         if (error) {
-                              console.error(error);
-                              return reply.code(500).send({ error: 'Error capturing PayPal payment' });
-                         } else {
-                              const sellerWallet = getSellerWallet(payment);
-                              updateSellerWallet(sellerWallet, payment.transactions[0].amount.total);
+                    paypal.payment.execute(
+                         paymentId,
+                         { payer_id: payerId },
+                         (error, payment) => {
+                              if (error) {
+                                   console.error(error);
 
-                              console.log('Payment authorized successfully', payment);
-                              return reply.code(200).send({ message: 'Payment authorized and stored in wallet' });
-                         }
-                    });
+                                   return reply.code(500).send({
+                                        error: 'Error capturing PayPal payment',
+                                   });
+                              }
+
+                              const sellerWallet = getSellerWallet(payment);
+
+                              updateSellerWallet(
+                                   sellerWallet,
+                                   payment.transactions[0].amount.total,
+                              );
+
+                              console.log(
+                                   'Payment authorized successfully',
+                                   payment,
+                              );
+
+                              return reply.code(200).send({
+                                   message: 'Payment authorized and stored in wallet',
+                              });
+                         },
+                    );
                }
           },
 
           // ============= || Stripe Payment || ============ //
           stripe_payment: async (request, reply) => {
-
                const product = request.product;
                const userInfo = request.userInfo;
 
                const { payment_method } = request.body;
+
                if (!payment_method) {
-                    return reply.code(400).send({ error: 'Payment method is required.' });
+                    return reply.code(400).send({
+                         error: 'Payment method is required.',
+                    });
                }
 
-               const priceUSD = parseFloat(product.price);
+               const priceUSD = Number(product.price);
+
+               if (!Number.isFinite(priceUSD) || priceUSD <= 0) {
+                    return reply.code(400).send({
+                         error: 'Invalid product price.',
+                    });
+               }
+
                const amountInCents = Math.round(priceUSD * 100);
-               
+
                try {
-                    const paymentIntent = await stripe.paymentIntents.create({
+                    const paymentIntent = await paymentStripe.paymentIntents.create({
                          amount: amountInCents,
                          currency: 'usd',
-                         payment_method: payment_method,
+                         payment_method,
                          confirmation_method: "automatic",
                          capture_method: 'manual',
                          confirm: true,
@@ -173,97 +215,149 @@ export function payment_Controller(db, io, users) {
                          },
                     });
 
-                    if( paymentIntent.status === "requires_capture" || paymentIntent.status === "requires_action" ){
-                         try{ 
-                              return reply.code(200).send({ id: paymentIntent.client_secret, status:paymentIntent.status, payment_id:paymentIntent.id });
-                         }catch(err){
-                              console.log(err);
-                              return reply.code(500).send({ error: err });
-                         }
+                    if (
+                         paymentIntent.status === "requires_capture" ||
+                         paymentIntent.status === "requires_action"
+                    ) {
+                         return reply.code(200).send({
+                              id: paymentIntent.client_secret,
+                              status: paymentIntent.status,
+                              payment_id: paymentIntent.id,
+                         });
                     }
+
+                    return reply.code(400).send({
+                         error: 'Pago fallido o incompleto.',
+                         status: paymentIntent.status,
+                    });
                } catch (error) {
-                    console.log(error.t);
-                    return reply.code(500).send({ error: error});
+                    console.error(error);
+
+                    return reply.code(500).send({
+                         error,
+                    });
                }
           },
-          // HAY QUE ADAPTARLO AQUI TMB MANITO XD
-           
+
+          // ============= || Stripe Status || ============ //
           stripe_status: async (request, reply) => {
                const userInfo = request.userInfo;
                const product = request.product;
 
-               const { paymentIntentId } = request.body; 
+               const { paymentIntentId } = request.body;
+
+               if (!paymentIntentId) {
+                    return reply.code(400).send({
+                         error: 'Payment intent id is required.',
+                    });
+               }
 
                try {
-                    const paymentIntent_response = await stripe.paymentIntents.retrieve(paymentIntentId);
-                    if (paymentIntent_response.status === 'requires_capture') {
-                         const order_id = randomUUID();
+                    const paymentIntent_response =
+                         await paymentStripe.paymentIntents.retrieve(paymentIntentId);
 
-                         const security_q = `
-                              SELECT payment_processed FROM Payments
-                              WHERE payment_id = ?
-                         `;
-                         const response = await db(security_q,[paymentIntent_response.id]);
-                         if(response.length === 1 && response[0].payment_processed ===  1) return reply.code(401).send({error:"invalid payment id"});
-
-                         const update_wallet = `
-                              UPDATE Wallets
-                              SET pending = pending + ?
-                              WHERE user_id = ?;
-                         `;
-                         await db(update_wallet, [product.price, product.user_id]);
-                         let buy_option;
-                         
-                         if(product.category === 'Service'){
-                              buy_option = Set_orders.service;
-                         }else if(product.category === "Account"){
-                              buy_option = Set_orders.account;
-                         }else{
-                              return reply.code(400).send("invalid option");
-                         }
-
-                         await buy_option(reply,db,product,userInfo,order_id);
-                         await Set_orders.final(reply,db,product,userInfo,io,users);
-
-                         const security_u = `
-                              INSERT INTO Payments (
-                                   payment_processed, 
-                                   payment_id, 
-                                   order_id, 
-                                   user_id,
-                                   payment_gateway, 
-                                   payment_gateway_id, 
-                                   amount,
-                                   status,
-                                   wallet_id
-                              )
-                              VALUES (
-                                   1, ?, ?, ?, ?, ?, ?, ?, 
-                                   (SELECT wallet_id FROM Wallets WHERE user_id = ?)
-                              );
-                         `;
-                         
-                         const gateway_id = randomUUID();
-                         await db(security_u, [
-                              paymentIntent_response.id,
-                              order_id,
-                              userInfo.id,
-                              "stripe",
-                              gateway_id,
-                              product.price,
-                              "requires_capture",
-                              product.user_id
-                         ]);
-
-                         return reply.code(200).send("OK");
-                    } else {
-                         return reply.code(400).send({ error: 'Pago fallido o incompleto.' });
+                    if (paymentIntent_response.status !== 'requires_capture') {
+                         return reply.code(400).send({
+                              error: 'Pago fallido o incompleto.',
+                         });
                     }
+
+                    const security_q = `
+                         SELECT payment_processed FROM Payments
+                         WHERE payment_id = ?
+                    `;
+
+                    const response = await db(security_q, [
+                         paymentIntent_response.id,
+                    ]);
+
+                    if (
+                         response.length === 1 &&
+                         response[0].payment_processed === 1
+                    ) {
+                         return reply.code(401).send({
+                              error: "invalid payment id",
+                         });
+                    }
+
+                    
+
+                    let buy_option;
+
+                    if (product.category === 'Service') {
+                         buy_option = Orders.service;
+                    } else if (product.category === "Account") {
+                         buy_option = Orders.account;
+                    } else {
+                         return reply.code(400).send("invalid option");
+                    }
+
+                    const update_wallet = `
+                         UPDATE Wallets
+                         SET pending = pending + ?
+                         WHERE user_id = ?;
+                    `;
+
+                    await db(update_wallet, [product.price, product.user_id]);
+
+                    const order_id = randomUUID();
+
+                    await buy_option(
+                         reply,
+                         db,
+                         product,
+                         userInfo,
+                         order_id,
+                    );
+
+                    await Orders.final(
+                         reply,
+                         db,
+                         product,
+                         userInfo,
+                         io,
+                         users,
+                    );
+
+                    const security_u = `
+                         INSERT INTO Payments (
+                              payment_processed, 
+                              payment_id, 
+                              order_id, 
+                              user_id,
+                              payment_gateway, 
+                              payment_gateway_id, 
+                              amount,
+                              status,
+                              wallet_id
+                         )
+                         VALUES (
+                              1, ?, ?, ?, ?, ?, ?, ?, 
+                              (SELECT wallet_id FROM Wallets WHERE user_id = ?)
+                         );
+                    `;
+
+                    const gateway_id = randomUUID();
+
+                    await db(security_u, [
+                         paymentIntent_response.id,
+                         order_id,
+                         userInfo.id,
+                         "stripe",
+                         gateway_id,
+                         product.price,
+                         "requires_capture",
+                         product.user_id,
+                    ]);
+
+                    return reply.code(200).send("OK");
                } catch (error) {
                     console.error('Error al verificar el pago:', error);
-                    return reply.code(500).send({ error: 'Error en el servidor al verificar el pago.' });
+
+                    return reply.code(500).send({
+                         error: 'Error en el servidor al verificar el pago.',
+                    });
                }
-          }
+          },
      };
 }
-

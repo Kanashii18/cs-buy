@@ -7,16 +7,6 @@ import {
   afterEach,
 } from '@jest/globals';
 
-/**
- * IMPORTANTE:
- * Pon este archivo de test en la MISMA carpeta donde está el archivo que contiene:
- *
- * export function payment_Controller(db, io, users) { ... }
- *
- * Luego cambia SOLO esta línea por el nombre real de ESE archivo.
- */
-const { payment_Controller } = await import("../payment.controller");
-
 const stripePaymentIntentsMock = {
   create: jest.fn(),
   retrieve: jest.fn(),
@@ -78,6 +68,7 @@ jest.unstable_mockModule('../payment_success/chat.notify.db.js', () => ({
   default: finallyOrderMock,
 }));
 
+const { payment_Controller } = await import('../payment.controller.js');
 
 function createReplyMock() {
   return {
