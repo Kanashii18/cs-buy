@@ -280,8 +280,6 @@ export function payment_Controller(db, io, users, dependencies = {}) {
                          });
                     }
 
-                    
-
                     let buy_option;
 
                     if (product.category === 'Service') {
