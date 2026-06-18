@@ -7,13 +7,13 @@
     "node": ">=20"
   },
   "scripts": {
-    "test":"node --experimental-vm-modules ./node_modules/jest/bin/jest.js backend/**/* --runInBand --verbose",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js backend/**/* --runInBand --verbose",
     "a": "node backend/api/api.js",
-    "api": "node --watch api/api.js",
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "api": "node --watch backend/api/api.js",
+    "dev": "next dev frontend",
+    "build": "next build frontend",
+    "start": "next start frontend",
+    "lint": "eslint frontend"
   },
   "dependencies": {
     "@google-cloud/vision": "^5.3.3",
