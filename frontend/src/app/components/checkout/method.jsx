@@ -6,18 +6,15 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 const loaderSvg = "../assets/icons/loader/payment_loader.svg";
 
-const testing = false;
-const stripePromise = loadStripe(testing ? 
-     "pk_test_51RuTndBZL3uHJlLtnFRg17FDRgk0umD0C8ZxaWPNeR8IitM2GynHSmI9fV8moPMkJCb7550VqYByEnhirlVf2THI00vnkxCN6O" 
-     :
-     "pk_live_51RuTnVAyoQ9na92j82j3znsgW3VwPXQWmfdMnMHvfRl0YLJnfX2RRWPNFmTgxMIfxWvJ9Pp9L395p37RgAhD1Q8u00nQRESuAt"
+const stripePromise = loadStripe(
+     "pk_test_51RuTndBZL3uHJlLtnFRg17FDRgk0umD0C8ZxaWPNeR8IitM2GynHSmI9fV8moPMkJCb7550VqYByEnhirlVf2THI00vnkxCN6O""pk_live_51RuTnVAyoQ9na92j82j3znsgW3VwPXQWmfdMnMHvfRl0YLJnfX2RRWPNFmTgxMIfxWvJ9Pp9L395p37RgAhD1Q8u00nQRESuAt"
 );
 
 export default function Method({product}) {
      const [loading, setLoading] = useState(false);
      const [active_error, setError] = useState(false);
      const [msg_error, setMessage] = useState(null);
-     const [visiblePaymentMethod, setVisiblePaymentMethod] = useState(null); // Guardamos la opción visible
+     const [visiblePaymentMethod, setVisiblePaymentMethod] = useState(null);
 
      const handleBack = () => {
           window.history.back();
