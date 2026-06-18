@@ -1,23 +1,17 @@
 export default function FootBar() {
      return (
-          <footer className="flex flex-col w-full bg-black">
-               <div className=" bg-neutral-900 max-sm:mt-[25%]">
-                    <div className="grid grid-cols-4 px-4">
-                         <p className="text-white text-sm py-3 text-center">
-                              este es el foot
-                         </p>
-                         <p className="text-white text-sm py-3 text-center">
-                              este es otro contenido
-                         </p>
-                         <p className="text-white text-sm py-3 text-center">
-                              este es otro contenido mas
-                         </p>
-                         <p className="text-white text-sm py-3 text-center">
-                              este es otro contenido tambien
-                         </p>
-                    </div>
-               </div>
-                    
+          <footer className="w-full border-t border-neutral-800 bg-neutral-950">
+               <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-3 px-6 py-4 text-center text-sm sm:grid-cols-3">
+                    <p className="text-neutral-400 sm:text-left"> © 2026 Csbuy </p>
+                    <nav className="flex justify-center gap-4 text-neutral-400">
+                         <a href="/help" className="hover:text-white"> Terms </a>
+                         <a href="/help" className="hover:text-white"> Privacy </a>
+                         <a href="/help" className="hover:text-white"> Contact </a>
+                    </nav>
+                    <p className="text-neutral-500 sm:text-right"> Developed by{" "}
+                         <span className="text-neutral-300"> Daniel Alexander </span>
+                    </p>
+               </div>            
           </footer>
      );
 }
