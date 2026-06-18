@@ -24,7 +24,7 @@ export default function Help() {
                          </div>
                          <div className="faq-item">
                               <h3 className="faq-question">How do I contact customer support?</h3>
-                              <p className="faq-answer">If you need help, you can email us at support@marketplace.com.</p>
+                              <p className="faq-answer">If you need help, you can email us at csbuy.ceo@gmail.com.</p>
                          </div>
                     </div>
                </div>
