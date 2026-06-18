@@ -7,7 +7,7 @@ import { Elements } from '@stripe/react-stripe-js';
 const loaderSvg = "../assets/icons/loader/payment_loader.svg";
 
 const stripePromise = loadStripe(
-     "pk_test_51RuTndBZL3uHJlLtnFRg17FDRgk0umD0C8ZxaWPNeR8IitM2GynHSmI9fV8moPMkJCb7550VqYByEnhirlVf2THI00vnkxCN6O""pk_live_51RuTnVAyoQ9na92j82j3znsgW3VwPXQWmfdMnMHvfRl0YLJnfX2RRWPNFmTgxMIfxWvJ9Pp9L395p37RgAhD1Q8u00nQRESuAt"
+     "pk_test_51RuTndBZL3uHJlLtnFRg17FDRgk0umD0C8ZxaWPNeR8IitM2GynHSmI9fV8moPMkJCb7550VqYByEnhirlVf2THI00vnkxCN6O"
 );
 
 export default function Method({product}) {
