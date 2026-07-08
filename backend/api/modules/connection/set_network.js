@@ -2,8 +2,6 @@ import { Server } from 'socket.io';
 import { chat_network } from './chat.socket';
 import { notification_network } from './notification.socket';
 
-const online = new Map();
-
 export function Init_conection(server){
 
      const users = {};
@@ -47,4 +45,5 @@ export function Init_conection(server){
                delete users[socket.userId];
           });
      });
+     return {io,users};
 }

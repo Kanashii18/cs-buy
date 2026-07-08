@@ -9,14 +9,26 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Routes
+
+import userRouter from './routes/user.routes.js';
+import authRouter from './routes/auth.routes.js';
+import chatRouter from './routes/chat.routes.js';
+import sellerRouter from './routes/seller.routes.js';
+import checkoutRouter from './routes/purchase.routes.js';
+import orderRouter from './routes/order.routes.js';
+import walletRouter from './routes/wallet.routes.js';
+
 // Load environment variables
 import 'dotenv/config';
 
 // middleware...
 import {checkoutID_verify, authMiddleware} from "./middleware/verify_session.js";
+import { ensureDevice } from './routes/controllers/user.controller.js';
 
 // modules...
 import cloudinary from "./modules/filter.js";
+import { Init_conection } from './modules/connection/set_network.js';
 
 // scripts...
 import {db} from "./scripts/db.js";
@@ -58,24 +70,12 @@ fastify.register(staticFiles, {
 fastify.register(cookie);
 fastify.addHook('preHandler', ensureDevice);
 
-// // Static files
-// fastify.register(staticFiles, {
-//      root: path.join(__dirname, 'dist'),
-//      prefix: '/'
-// });
 
-// ========================= || Routes || ========================== //
 
-import userRouter from './routes/user.routes.js';
-import authRouter from './routes/auth.routes.js';
-import chatRouter from './routes/chat.routes.js';
-import sellerRouter from './routes/seller.routes.js';
-import checkoutRouter from './routes/purchase.routes.js';
-import orderRouter from './routes/order.routes.js';
-import walletRouter from './routes/wallet.routes.js';
+// ================================================================= //
+const {io, users} = Init_conection();
 
 // ========================== || Routes Definition || ========================== //
-
 fastify.register(async (fastify) => {
      fastify.register(userRouter(db, cloudinary, authMiddleware), { prefix: '/api/user' });
      fastify.register(sellerRouter(db, cloudinary, authMiddleware), { prefix: '/api/seller' });
@@ -101,4 +101,4 @@ fastify.all("/*", async (req, reply) => {
 });
 
 // =====================|| Set Server ||===================== //
-await fastify.listen({ port:PORT, host: "0.0.0.0" });
+fastify.listen({ port:PORT, host: "0.0.0.0" });
