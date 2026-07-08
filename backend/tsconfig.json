@@ -1,0 +1,16 @@
+{
+     "compilerOptions": {
+          "target": "esnext",
+          "module": "NodeNext",
+          "moduleResolution": "NodeNext",
+          "sourceMap": false,
+          "outDir": "./dir",
+          "rootDir": "./api",
+          "forceConsistentCasingInFileNames": true,
+          "resolveJsonModule": true,
+          "esModuleInterop": true,
+          "allowSyntheticDefaultImports": true
+     },
+     "include": ["./api/**/*.ts"],
+     "exclude": ["node_modules"]
+}

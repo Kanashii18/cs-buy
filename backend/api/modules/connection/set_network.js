@@ -2,7 +2,7 @@ import { Server } from 'socket.io';
 import { chat_network } from './chat.socket';
 import { notification_network } from './notification.socket';
 
-export function Init_conection(server){
+export function Init_conection(server, db){
 
      const users = {};
      const online = new Map();
@@ -37,7 +37,7 @@ export function Init_conection(server){
                if (typeof ack === "function") ack({ userId: targetUserId, isOnline });
           });
 
-          chat_network(io, socket);
+          chat_network(io, users, socket, db);
           notification_network(io, socket);
           
           // Handle user disconnect
@@ -45,5 +45,5 @@ export function Init_conection(server){
                delete users[socket.userId];
           });
      });
-     return {io,users};
+     return io;
 }

@@ -1,5 +1,5 @@
 
-export function chat_network(io, socket, db){
+export function chat_network(io, users, socket, db){
      // Join chat room
      socket.on('join_room', async (roomId) => {
           console.log('autenticado...');

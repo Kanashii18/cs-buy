@@ -1,12 +1,8 @@
-import fs from 'fs';
 import mysql from "mysql2/promise";
-import dotenv from 'dotenv';
+import 'dotenv/config';
 
 // Load environment variables
-dotenv.config();
 // ======================== | DB | ======================== //
-
-
 
 const pool = mysql.createPool({
      port: 19390,
