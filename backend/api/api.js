@@ -3,7 +3,6 @@ import cookie from '@fastify/cookie';
 import multipart from "@fastify/multipart";
 import staticFiles from '@fastify/static';
 
-import crypto from "crypto"
 import path from 'path';
 import next from "next";
 import { fileURLToPath } from 'url';
@@ -13,27 +12,30 @@ const __dirname = path.dirname(__filename);
 // Load environment variables
 import 'dotenv/config';
 
-// middleware
+// middleware...
 import {checkoutID_verify, authMiddleware} from "./middleware/verify_session.js";
 
-// modules 
+// modules...
 import cloudinary from "./modules/filter.js";
 
-// scripts
+// scripts...
 import {db} from "./scripts/db.js";
 
-// indicate mode to testing or compile 
+// indicate mode
+// to testing or compile / .env;
 const dev = process.env.NODE_ENV !== "production";
+const PORT = process.env.PORT || 3000;
 
-// dir: indicamos la ruta de fronted a partir de la raiz, ej backend/api/api.ks | frontend/
-const app = next({ 
+// dir: indicamos la ruta de fronted a partir de la raiz,
+// ej backend/api/api.ks | frontend/
+const app = next({
      dev,
      dir:"./frontend"
 });
 
 const handle = app.getRequestHandler();
-
 await app.prepare();
+
 // Initialize Fastify app
 const fastify = Fastify({
      logger: {level: "warn"},
@@ -44,15 +46,7 @@ await fastify.register(multipart,{
      limits:{
           fileSize: 10 * 1024 * 1024
      },
-})
-
-const PORT = process.env.PORT || 3000;
-
-// // Static files
-// fastify.register(staticFiles, {
-//      root: path.join(__dirname, 'dist'),
-//      prefix: '/'
-// });
+});
 
 fastify.register(staticFiles, {
      root: path.join(__dirname),
@@ -60,33 +54,15 @@ fastify.register(staticFiles, {
      decorateReply: false
 });
 
-// Fastify plugins
-const sign = v => crypto.createHmac("sha256", process.env.DEVICE_SECRET).update(v).digest("base64url");
-const COOKIE = "__did";
-
-async function ensureDevice(request, reply) {
-     const c = request.cookies?.[COOKIE];
-     if (c) {
-          const [id, sig] = c.split(".");
-          if (id && sig && sig === sign(id)) { 
-               request.deviceId = id; 
-               return; 
-          }
-     }
-     const id = crypto.randomUUID();
-     reply.setCookie(COOKIE, `${id}.${sign(id)}`, {
-          httpOnly: false, 
-          sameSite: "lax",
-          secure: process.env.NODE_ENV === "production",
-          maxAge: 31536000000, 
-          path: "/"
-     });
-     request.deviceId = id;
-}
-
 // Register plugins
 fastify.register(cookie);
 fastify.addHook('preHandler', ensureDevice);
+
+// // Static files
+// fastify.register(staticFiles, {
+//      root: path.join(__dirname, 'dist'),
+//      prefix: '/'
+// });
 
 // ========================= || Routes || ========================== //
 
