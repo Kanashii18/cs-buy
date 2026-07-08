@@ -3,36 +3,28 @@ import cookie from '@fastify/cookie';
 import multipart from "@fastify/multipart";
 import staticFiles from '@fastify/static';
 
-import check_session from './scripts/check_session.js';
-
-import { Server } from 'socket.io';
 import crypto from "crypto"
 import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
-
 import next from "next";
-
-// Load environment variables
-dotenv.config();
-
+import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ==================== | cloudinary | ==================== //
-import cloudinary from 'cloudinary';
+// Load environment variables
+import 'dotenv/config';
 
-cloudinary.v2.config({
-     cloud_name: 'dkmcz80mt',
-     api_key: process.env.CLOUDINARY_API_KEY,
-     api_secret: process.env.CLOUDINARY_API_SECRET
-});
+// middleware
+import {checkoutID_verify, authMiddleware} from "./middleware/verify_session.js";
 
-// ========================= | DB | ========================= //
-import mysql from "./scripts/db.js";
-const db = mysql.db;
+// modules 
+import cloudinary from "./modules/filter.js";
 
+// scripts
+import {db} from "./scripts/db.js";
+
+// indicate mode to testing or compile 
 const dev = process.env.NODE_ENV !== "production";
+
 // dir: indicamos la ruta de fronted a partir de la raiz, ej backend/api/api.ks | frontend/
 const app = next({ 
      dev,
@@ -54,57 +46,7 @@ await fastify.register(multipart,{
      },
 })
 
-const port = process.env.PORT || 3000;
-
-// ===================== // MIDDLEWARES // ===================== //
-
-const authMiddleware = async(request, reply) => {
-     const r = await check_session(request, reply)
-     // if response isn't 200
-     if(r.code!==200) return reply.code(r.code).send({error:r.msg});
-}
-const checkoutID_verify = async(request, reply) => {
-     
-     if(!request.query.session_id) return reply.code(400).send({ error: 'Invalid Session' });
-     const session_id = request.query.session_id;
-     const userInfo = request.userInfo;
-
-     // look for the product_id with the checkout session...
-     let query = `
-          SELECT
-          product_id
-          FROM Checkout_id
-          WHERE id = ? AND user_id = ?
-     `
-     let resp_db = await db(query, [session_id, userInfo.id]);
-
-     if(resp_db.length === 0) return reply.code(400).send({error: "Session not found, refrest and try again"});
-     const product_id = resp_db[0].product_id;
-     // look for the product info
-     query = `
-          SELECT
-               price,
-               user_id,
-               category,
-               title,
-               image
-          FROM Products
-          WHERE product_id = ?
-     `
-     resp_db = await db(query, [product_id]);
-     if(resp_db.length === 0) return reply.code(400).send({error: "Product not found, try later please"});
-
-     return request.product = { 
-          price:resp_db[0].price,
-          product_id:product_id,
-          image:resp_db[0].image,
-          title:resp_db[0].title,
-          user_id:resp_db[0].user_id,
-          category:resp_db[0].category,
-     };
-};
-
-// ============================================================= //
+const PORT = process.env.PORT || 3000;
 
 // // Static files
 // fastify.register(staticFiles, {
@@ -117,178 +59,6 @@ fastify.register(staticFiles, {
      prefix: '/robots.txt',
      decorateReply: false
 });
-
-// =====================|| Websocket Chat ||===================== //
-
-const users = {};
-
-const io = new Server(fastify.server);
-io.engine.on("connection_error", (err) => {
-     console.log("Socket connection_error", {
-          code: err.code,
-          message: err.message,
-          context: err.context,
-     });
-});
-
-const online = new Map();
-
-io.on('connection', (socket) => {
-     const userId = socket.handshake.auth.userId;
-     if (!userId) {
-          console.log("❌ Conexión sin userId. Desconectando.");
-          return socket.disconnect();
-     }else{
-          console.log("conectadooo...", userId);
-     }
-
-    
-     socket.userId = userId;
-     users[userId] = socket.id;
-     if (!online.has(userId)) online.set(userId, new Set());
-     online.get(userId).add(socket.id);
-
-     socket.on("user:isOnline", ({ userId: targetUserId }, ack) => {
-          console.log("[SERVER] got user:isOnline", targetUserId, "ack?", typeof ack);
-          const isOnline = online.has(targetUserId);
-          if (typeof ack === "function") ack({ userId: targetUserId, isOnline });
-     });
-
-     // Join chat room
-     socket.on('join_room', async (roomId) => {
-          console.log('autenticado...');
-          socket.join(roomId);
-          console.log(`User ${socket.id} joined room ${roomId}`);
-
-          const userId = socket.userId;
-
-          const socketsInRoom = io.sockets.adapter.rooms.get(String(roomId))?.size || 0;
-          if (socketsInRoom === 1) {
-
-               await db(`
-               UPDATE chat_user_room_status
-               SET 
-                    unread_count_user_1 = CASE WHEN user_id = ? THEN 0 ELSE unread_count_user_1 END,
-                    unread_count_user_2 = CASE WHEN other_id = ? THEN 0 ELSE unread_count_user_2 END
-               WHERE id = ?
-               `, [userId, userId, roomId]);
-
-          }else if (socketsInRoom.length === 2) {
-               const resetUnreadQuery = `
-                    UPDATE chat_user_room_status
-                    SET unread_count_user_1 = 0, unread_count_user_2 = 0
-                    WHERE id = ?
-               `;
-               await db(resetUnreadQuery, [roomId]);
-          }
-     });
-
-     socket.on('send_message', async (data) => {
-          io.to(data.roomId).emit('receive_message', data);
-
-          const socketsInRoom = await io.in(data.roomId).fetchSockets();
-          if(socketsInRoom.length === 1){
-               const getContextQuery = `
-                    SELECT user_id, other_id 
-                    FROM chat_user_room_status 
-                    WHERE id = ?
-               `;
-               const resContext = await db(getContextQuery, [data.roomId]);
-
-               if (userId === resContext[0].user_id) {
-                    console.log("aumentandooo...");
-                    const incrementUnreadQuery = `
-                         UPDATE chat_user_room_status
-                         SET unread_count_user_2 = unread_count_user_2 + 1
-                         WHERE id = ?;
-                    `;
-                    await db(incrementUnreadQuery, [data.roomId]);
-                    const getUnreadCountQuery = `
-                         SELECT user_id, other_id
-                         FROM chat_user_room_status
-                         WHERE id = ?
-                    `;
-                    const quantity = await db(getUnreadCountQuery, [data.roomId]);
-                    const unread_count = {
-                         id: data.roomId,
-                         unread: 1,
-                         receiver: quantity[0].user_id === userId ? quantity[0].other_id : userId,
-                         transmitter: quantity[0].other_id === userId ? userId : quantity[0].other_id
-                    };
-                    console.log(unread_count.receiver, userId);
-                    if (unread_count.receiver !== userId) {
-                         const receiverSocketId = users[unread_count.receiver]; // Obtenemos el socket ID del receptor
-                         
-                         if (receiverSocketId) {
-                              const receiverSocket = io.sockets.sockets.get(receiverSocketId); // Obtenemos el socket usando su ID
-                              if (receiverSocket && receiverSocket.connected) {
-                                   receiverSocket.emit('unread_check', unread_count); // Enviamos el mensaje
-                              } else {
-                                   console.log(`Socket ${unread_count.receiver} no está conectado.`);
-                              }
-                         } else {
-                              console.log(`Usuario ${unread_count.receiver} no encontrado.`);
-                         }
-                    }
-                    console.log("lo mensaje",unread_count);
-
-               } else if (userId === resContext[0].other_id) {
-                    const incrementUnreadQuery = `
-                         UPDATE chat_user_room_status
-                         SET unread_count_user_1 = unread_count_user_1 + 1
-                         WHERE id = ?;
-                    `;
-                    await db(incrementUnreadQuery, [data.roomId]);
-                    
-                    const getUnreadCountQuery = `
-                         SELECT user_id, other_id, id
-                         FROM chat_user_room_status
-                         WHERE id = ?
-                    `;
-                    const quantity = await db(getUnreadCountQuery, [data.roomId]);
-                    const unread_count = {
-                         id: data.roomId,
-                         unread: 1,
-                         receiver: quantity[0].user_id,
-                         transmitter: quantity[0].other_id
-                    };
-                    if (unread_count.receiver !== userId) {
-                         const receiverSocketId = users[unread_count.receiver]; // Obtenemos el socket ID del receptor
-
-                         if (receiverSocketId) {
-                              const receiverSocket = io.sockets.sockets.get(receiverSocketId); // Obtenemos el socket usando su ID
-                              if (receiverSocket && receiverSocket.connected) {
-                                   receiverSocket.emit('unread_check', unread_count); // Enviamos el mensaje
-                              } else {
-                                   console.log(`Socket ${unread_count.receiver} no está conectado.`);
-                              }
-                         } else {
-                              console.log(`Usuario ${unread_count.receiver} no encontrado.`);
-                         }
-                    }
-               }
-          }
-     });
-
-     socket.on('unread_check', async (unread_count) => {
-          if (unread_count.receiver === userId) {
-               io.to(socket.id).emit();
-          }
-     });
-
-     socket.on("notification",(notice)=>{
-          if (notice.receiver === userId) {
-               io.to(socket.id).emit();
-          }
-     })
-
-     // Handle user disconnect
-     socket.on("disconnect", () => {
-          delete users[socket.userId];
-     });
-});
-
-// ============================================================ //
 
 // Fastify plugins
 const sign = v => crypto.createHmac("sha256", process.env.DEVICE_SECRET).update(v).digest("base64url");
@@ -355,4 +125,4 @@ fastify.all("/*", async (req, reply) => {
 });
 
 // =====================|| Set Server ||===================== //
-await fastify.listen({ port:4038, host: "0.0.0.0" });
+await fastify.listen({ port:PORT, host: "0.0.0.0" });

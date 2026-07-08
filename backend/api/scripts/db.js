@@ -8,7 +8,7 @@ dotenv.config();
 
 
 
-const db_conection = mysql.createPool({
+const pool = mysql.createPool({
      port: 19390,
      host: "mysql-a7f48e8-danieltlegaming-e8c0.h.aivencloud.com",
      user: "avnadmin",
@@ -20,11 +20,10 @@ const db_conection = mysql.createPool({
      ssl: { ca: process.env.CA_PEM },
 });
 
-export default {
-     db : async(query, params) => {
+const db = async(query, params) => {
           const [rows] = await db_conection.execute(query, params);
           return rows;
-     },
-     pool : db_conection 
-}
+     }
+
+export {db, pool};
 
