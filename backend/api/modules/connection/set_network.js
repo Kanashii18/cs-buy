@@ -45,5 +45,5 @@ export function Init_conection(server, db){
                delete users[socket.userId];
           });
      });
-     return io;
+     return {io, users};
 }

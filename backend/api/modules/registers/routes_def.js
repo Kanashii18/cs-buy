@@ -10,7 +10,7 @@ import walletRouter from '../../routes/wallet.routes.js';
 import {checkoutID_verify, authMiddleware} from "../../middleware/verify_session.js";
 import cloudinary from "../../modules/filter.js";
 
-export default async function routes_api(fastify, db, io){
+export default async function routes_api({fastify, db, io, users}){
      // ========================== || Routes Definition || ========================== //
      await fastify.register(async (fastify) => {
           fastify.register(userRouter(db, cloudinary, authMiddleware), { prefix: '/api/user' });

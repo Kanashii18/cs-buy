@@ -1,7 +1,6 @@
 import cloudinary from 'cloudinary';
 import multer from 'multer';
 
-cloudinary
 cloudinary.v2.config({
      cloud_name: 'dkmcz80mt',
      api_key: process.env.CLOUDINARY_API_KEY,

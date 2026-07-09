@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default async function registers_api(fastify, db, io){
+export default async function registers_api({fastify, db, io, users}){
      await fastify.register(multipart,{
           limits:{
                fileSize: 10 * 1024 * 1024
@@ -22,5 +22,5 @@ export default async function registers_api(fastify, db, io){
      
      // Register plugins
      fastify.register(cookie);
-     await routes_api(fastify, db, io);
+     await routes_api(fastify, db, io, users);
 }

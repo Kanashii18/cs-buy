@@ -1,8 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { randomUUID, createHmac } from 'crypto';
 import vision from '@google-cloud/vision';
-import dotenv from 'dotenv';
-dotenv.config();
 import bcrypt from "bcrypt";
 import fs from "fs";
 import multer from 'multer';
