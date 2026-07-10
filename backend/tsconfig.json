@@ -9,7 +9,9 @@
           "forceConsistentCasingInFileNames": true,
           "resolveJsonModule": true,
           "esModuleInterop": true,
-          "allowSyntheticDefaultImports": true
+          "allowSyntheticDefaultImports": true,
+          "noEmit": true,
+          "allowImportingTsExtensions": true
      },
      "include": ["./api/**/*.ts"],
      "exclude": ["node_modules"]

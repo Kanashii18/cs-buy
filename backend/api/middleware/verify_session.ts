@@ -1,12 +1,12 @@
 
 
 import type {FastifyRequest, FastifyReply} from "fastify";
+import type { Verify_body } from "../types/middleware/verify_session.type.ts";
+import type { User_Scheme } from "../types/user.type.ts";
 import jwt from 'jsonwebtoken';
-import { Verify_body } from "../types/middleware/verify_session.type.js";
-import { User_Scheme } from "../types/user.type.js";
 
 /**
- * @returns returns user information, EJ: { id:UUID, img:string, username:string }
+ * @returns user information, EJ: { id:UUID, img:string, username:string }
  */
 export default function(request:FastifyRequest&Verify_body,reply:FastifyReply) {
      // verify token validation from user...

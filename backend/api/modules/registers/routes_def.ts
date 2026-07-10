@@ -1,3 +1,4 @@
+import type { Register_Params } from '../../types/modules/registers/registers.type.js';
 // Routes
 import userRouter from '../../routes/user.routes.js';
 import authRouter from '../../routes/auth.routes.js';
@@ -7,16 +8,17 @@ import checkoutRouter from '../../routes/purchase.routes.js';
 import orderRouter from '../../routes/order.routes.js';
 import walletRouter from '../../routes/wallet.routes.js';
 
-import {checkoutID_verify, authMiddleware} from "../../middleware/verify_session.js";
-import cloudinary from "../../modules/filter.js";
+import authMiddleware from "../../middleware/verify_session.js";
+import checkoutID_verify from "../../middleware/checkout_verify.js"
+import cloudinary from "../../config/filter.ts";
 
-export default async function routes_api({fastify, db, io, users}){
+export default async function routes_api({fastify, db, io, users}: Register_Params){
      // ========================== || Routes Definition || ========================== //
      await fastify.register(async (fastify) => {
+
           fastify.register(userRouter(db, cloudinary, authMiddleware), { prefix: '/api/user' });
           fastify.register(sellerRouter(db, cloudinary, authMiddleware), { prefix: '/api/seller' });
           fastify.register(authRouter(db, cloudinary, authMiddleware), { prefix: '/api/auth' });
-
           fastify.register( async (scope) => {
                scope.addHook("preHandler", authMiddleware);
                scope.register(chatRouter(db, io), { prefix: '/api/chat' });

@@ -1,13 +1,16 @@
+
+import type { Register_Params } from '../../types/modules/registers/registers.type.ts';
 import cookie from '@fastify/cookie';
 import multipart from "@fastify/multipart";
 import staticFiles from '@fastify/static';
-import routes_api from './routes_def';
+import routes_api from './routes_def.ts';
+
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default async function registers_api({fastify, db, io, users}){
+export default async function registers_api({fastify, db, io, users}:Register_Params){
      await fastify.register(multipart,{
           limits:{
                fileSize: 10 * 1024 * 1024
@@ -22,5 +25,5 @@ export default async function registers_api({fastify, db, io, users}){
      
      // Register plugins
      fastify.register(cookie);
-     await routes_api(fastify, db, io, users);
+     await routes_api({fastify, db, io, users});
 }

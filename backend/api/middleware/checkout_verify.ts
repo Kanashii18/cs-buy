@@ -2,11 +2,14 @@
 
 import type {FastifyRequest, FastifyReply} from "fastify";
 import type { UUID } from 'node:crypto';
-import {db} from "../scripts/db.js";
-import { Checkout_body, Checkout_verify, Product, Product_id } from "../types/middleware/checkout_verify.type.js";
-import { User_Scheme } from "../types/user.type.js";
+import type { Checkout_body, Checkout_verify, Product, Product_id } from "../types/middleware/checkout_verify.type.ts";
+import type { User_Scheme } from "../types/user.type.ts";
+import {db} from "../scripts/db.ts";
 
-async function checkoutID_verify(request:FastifyRequest<{Querystring:Checkout_verify}> & Checkout_body, reply:FastifyReply) {
+/**
+ * @returns {Promise<Promise[]>}  ...inject to request Object product information...
+ */
+export default async function(request:FastifyRequest<{Querystring:Checkout_verify}> & Checkout_body, reply:FastifyReply) {
      if(!request.query.session_id) return reply.code(401).send({ error: 'Invalid Session' });
      const session_id : UUID = request.query.session_id;
      const userInfo : User_Scheme = request.userInfo;
@@ -43,5 +46,3 @@ async function checkoutID_verify(request:FastifyRequest<{Querystring:Checkout_ve
           category:product_info[0].category,
      };
 };
-
-export default checkoutID_verify;

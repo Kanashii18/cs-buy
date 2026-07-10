@@ -1,6 +1,6 @@
 import {createHmac, UUID} from "crypto";
 import type {FastifyRequest, FastifyReply} from "fastify";
-import { Req_Device } from "../types/middleware/ensure_device.type.js";
+import type { Req_Device } from "../types/middleware/ensure_device.type.ts";
 
 export default async function ensureDevice(request:FastifyRequest & Req_Device, reply:FastifyReply) {
      

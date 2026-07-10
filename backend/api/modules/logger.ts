@@ -1,5 +1,5 @@
 import winston from 'winston';
-
+import type CustomLogger from "../types/modules/logger.type.ts";
 const logger = winston.createLogger({
      level: 'info',
      format: winston.format.combine(
@@ -10,12 +10,13 @@ const logger = winston.createLogger({
           new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
           new winston.transports.File({ filename: 'logs/combined.log' })
      ]
-})
+});
 
-export default function ( service ) {
-     return{
-          log: ( message, option = "info" ) => {
+
+export default function (service: string): CustomLogger {
+     return {
+          log: (message: string, option: string = 'info') => {
                logger.log(option, { service, message });
           }
-     }
-};
+     };
+}

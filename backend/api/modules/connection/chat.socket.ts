@@ -1,14 +1,18 @@
+import type { Chat_Info } from "../../types/modules/connections/chat.socket.type.ts";
+import type { DB } from "../../types/db.type.ts";
+import { UUID } from "node:crypto";
+import { Server, Socket } from "socket.io";
 
-export function chat_network(io, users, socket, db){
-     // Join chat room
-     socket.on('join_room', async (roomId) => {
+export function chat_network(io : Server, users:Object, socket:Socket, db:DB, userId : string){
+     // Join to chat room
+     socket.on('join_room', async (roomId : UUID) => {
           console.log('autenticado...');
           socket.join(roomId);
           console.log(`User ${socket.id} joined room ${roomId}`);
 
-          const userId = socket.userId;
+          const userId = socket.data.userId as string;
 
-          const socketsInRoom = io.sockets.adapter.rooms.get(String(roomId))?.size || 0;
+          const socketsInRoom = io.sockets.adapter.rooms.get(String(roomId))?.size || 0 as Number;
           if (socketsInRoom === 1) {
 
                await db(`
@@ -19,7 +23,7 @@ export function chat_network(io, users, socket, db){
                WHERE id = ?
                `, [userId, userId, roomId]);
 
-          }else if (socketsInRoom.length === 2) {
+          }else if (socketsInRoom === 2) {
                const resetUnreadQuery = `
                     UPDATE chat_user_room_status
                     SET unread_count_user_1 = 0, unread_count_user_2 = 0
@@ -28,8 +32,8 @@ export function chat_network(io, users, socket, db){
                await db(resetUnreadQuery, [roomId]);
           }
      });
-
-     socket.on('send_message', async (data) => {
+     // Chat / sends the message to the room; if the receiver is not there, it increments their unread count and sends them a notification.
+     socket.on('send_message', async (data:Chat_Info) => {
           io.to(data.roomId).emit('receive_message', data);
 
           const socketsInRoom = await io.in(data.roomId).fetchSockets();
