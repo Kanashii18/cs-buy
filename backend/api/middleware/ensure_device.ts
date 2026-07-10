@@ -1,7 +1,11 @@
-export default async function ensureDevice(request, reply) {
+import {createHmac, UUID} from "crypto";
+import type {FastifyRequest, FastifyReply} from "fastify";
+import { Req_Device } from "../types/middleware/ensure_device.type.js";
+
+export default async function ensureDevice(request:FastifyRequest & Req_Device, reply:FastifyReply) {
      
      // Fastify plugins...
-     const sign = v => crypto.createHmac("sha256", process.env.DEVICE_SECRET).update(v).digest("base64url");
+     const sign = (v:string) => createHmac("sha256", process.env.DEVICE_SECRET).update(v).digest("base64url");
      const COOKIE = "__did";
 
      const c = request.cookies?.[COOKIE];
@@ -12,7 +16,7 @@ export default async function ensureDevice(request, reply) {
                return;
           }
      }
-     const id = crypto.randomUUID();
+     const id : UUID = crypto.randomUUID();
      reply.setCookie(COOKIE, `${id}.${sign(id)}`, {
           httpOnly: false,
           sameSite: "lax",

@@ -14,7 +14,7 @@ export default function(request,reply) {
      }
      catch{ return {code:401, msg: "Invalid Token"}};
 
-     // return json with user info
+     // return object { id, img, username } with user info
      request.userInfo = userInfo;
      return {code:200,msg:"OK"};
 }

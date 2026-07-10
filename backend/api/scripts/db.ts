@@ -1,10 +1,10 @@
-import mysql from "mysql2/promise";
+import mysql, { Pool } from "mysql2/promise";
 import 'dotenv/config';
 
 // Load environment variables
 // ======================== | DB | ======================== //
 
-const pool = mysql.createPool({
+const db_conection : Pool = mysql.createPool({
      port: 19390,
      host: "mysql-a7f48e8-danieltlegaming-e8c0.h.aivencloud.com",
      user: "avnadmin",
@@ -16,10 +16,13 @@ const pool = mysql.createPool({
      ssl: { ca: process.env.CA_PEM },
 });
 
-const db = async(query, params) => {
+const db = async <T>( query:string, params: unknown[] = [] ): Promise<T>=>    {
+          if(typeof query !== "string" || Array.isArray(params)) {
+               throw new Error("Invalid type query in db");
+          }
           const [rows] = await db_conection.execute(query, params);
-          return rows;
+          return rows as T;
      }
 
-export {db, pool};
+export {db, db_conection as pool };
 

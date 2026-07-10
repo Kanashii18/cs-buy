@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import '@fastify/cookie';
 import next from "next";
 // Load environment variables
 import 'dotenv/config';
