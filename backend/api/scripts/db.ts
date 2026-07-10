@@ -23,6 +23,5 @@ const db = async <T>( query:string, params: unknown[] = [] ): Promise<T>=>    {
           const [rows] = await db_conection.execute(query, params);
           return rows as T;
      }
-
 export {db, db_conection as pool };
 
