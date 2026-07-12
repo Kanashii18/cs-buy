@@ -1,21 +1,18 @@
-// routes/auth.routes.js
-import { userController } from "./controllers/user.controller.js";
+import { userController } from './controllers/user/index.js';
+import authMiddleware from '../middleware/verify_session.ts';
 
-export default function userRouter(db,ci,authMiddleware) {
-     const { loginUser,
-          createUser,
-          deleteUser,
-          modifyUser,
-          getNotify} = userController(db,ci);
+export default function userRouter(db, ci) {
+  const user = userController(db, ci);
 
-     return async function (fastify) {
-          fastify.post('/login', loginUser);
-          fastify.post('/register', createUser);
-          fastify.register(async(scope)=>{
-               scope.addHook("preHandler", authMiddleware);
-               scope.delete('/delete', deleteUser);
-               scope.put('/modify', modifyUser);
-               scope.get('/notification', getNotify);
-          })
-     };
+  return async function (fastify) {
+    fastify.post('/login', user.loginUser);
+    fastify.post('/register', user.createUser);
+
+    fastify.register(async (scope) => {
+      scope.addHook('preHandler', authMiddleware);
+      scope.delete('/delete', user.deleteUser);
+      scope.put('/modify', user.modifyUser);
+      scope.get('/notification', user.getNotify);
+    });
+  };
 }

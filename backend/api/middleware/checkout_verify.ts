@@ -9,10 +9,18 @@ import {db} from "../scripts/db.ts";
 /**
  * @returns {Promise<Promise[]>}  ...inject to request Object product information...
  */
-export default async function(request:FastifyRequest<{Querystring:Checkout_verify}> & Checkout_body, reply:FastifyReply) {
+export default async function(request:FastifyRequest<{Querystring:Checkout_verify}> & Checkout_body, reply:FastifyReply): Promise<Promise<null>> {
      if(!request.query.session_id) return reply.code(401).send({ error: 'Invalid Session' });
      const session_id : UUID = request.query.session_id;
      const userInfo : User_Scheme = request.userInfo;
+     if (
+          !("id" in userInfo) ||
+          !userInfo.img ||
+          !userInfo.username ||
+          !userInfo.role
+     ) {
+          return reply.code(401).send({ error: "Unauthorized" });
+     }
 
      // look for the product_id with the checkout session...
      const is_session = await db<Product_id[]>(`

@@ -2,8 +2,9 @@ import { Server, type Socket } from 'socket.io';
 import { chat_network } from './chat.socket.ts';
 import { notification_network } from './notification.socket.ts';
 import type { FastifyInstance } from 'fastify';
+import { DB } from '../../types/db.type.ts';
 
-export function Init_conection(server : FastifyInstance, db){
+export function Init_conection(server : FastifyInstance, db:DB){
      if(typeof server !== "object" || !server){
           throw new Error(`Server type invalid value, ${typeof(server)}`);
      }

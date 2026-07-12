@@ -1,22 +1,23 @@
 // routes/seller.routes.js
-import { checkout_Controller } from './controllers/checkout.controller.js';
-import { payment_Controller } from './controllers/payment.controller.js';
+import checkoutController from './controllers/checkout/index.js';
+import paymentController from './controllers/payment/index.js';
+import checkoutID_verify from '../middleware/checkout_verify.ts';
 
-export default function purchasedRouter(db, io, users,checkoutID_verify) {
-     const { get_session, getCheckoutProduct, post_order } = checkout_Controller(db);
-     const { crypto_payment, paypal_payment, stripe_payment, stripe_status, gpay_payment } = payment_Controller(db, io, users);
+export default function purchaseRouter(db, io, users, dependencies) {
 
+     const checkout = checkoutController(db, io, users);
+     const payment = paymentController(db, io, users, dependencies);
      return async function (fastify) {
-          fastify.post('/token', get_session);
-          fastify.get('/product', getCheckoutProduct);
-          fastify.register( async (checkout) => {
-               checkout.addHook("preHandler",checkoutID_verify);
-               checkout.post('/order/complete', post_order);
-               checkout.post('/crypto_payment/pay', crypto_payment);
-               checkout.post('/paypal/pay', paypal_payment);
-               checkout.post('/stripe/complete', stripe_payment);
-               checkout.post('/stripe/payment-status', stripe_status);
-               checkout.post('/create-payment-intent', gpay_payment)
-          })
+          fastify.post('/token', checkout.get_session);
+          fastify.get('/product', checkout.getCheckoutProduct);
+          fastify.register(async (checkoutScope) => {
+               checkoutScope.addHook('preHandler', checkoutID_verify);
+               checkoutScope.post('/order/complete', checkout.post_order);
+               checkoutScope.post('/crypto_payment/pay', payment.crypto_payment);
+               checkoutScope.post('/paypal/pay', payment.paypal_payment);
+               checkoutScope.post('/stripe/complete', payment.stripe_payment);
+               checkoutScope.post('/stripe/payment-status', payment.stripe_status);
+               checkoutScope.post('/create-payment-intent', payment.gpay_payment);
+          });
      };
 }

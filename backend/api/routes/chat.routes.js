@@ -1,16 +1,16 @@
-import {chatGestion} from "./controllers/chat/overview.js";
-import {messageGestion} from "./controllers/chat/messages.js";
+import chatController from './controllers/chat/overview/index.js';
+import messageController from './controllers/chat/messages/index.js';
 
-export default function chatRouter(db, io){
-     const { overview, markAsRead, getProduct } = chatGestion(db);
-     const { postChat, readRoom, get_unread } = messageGestion(db);
+export default function chatRouter(db) {
+     const chat = chatController(db);
+     const message = messageController(db);
 
-     return async function (fastify, options) {
-          fastify.get('/overview', overview);
-          fastify.get('/unread', get_unread);
-          fastify.put('/markAsRead', markAsRead);
-          fastify.post('/messages', readRoom);
-          fastify.put('/messages', postChat);
-          fastify.get('/listener', getProduct);
+     return async function (fastify) {
+          fastify.get('/overview', chat.overview);
+          fastify.get('/listener', chat.getProduct);
+          fastify.put('/markAsRead', chat.markAsRead);
+          fastify.post('/messages', message.readRoom);
+          fastify.put('/messages', message.postChat);
+          fastify.get('/unread', message.get_unread);
      };
 }

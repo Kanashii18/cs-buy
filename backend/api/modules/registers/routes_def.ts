@@ -9,24 +9,23 @@ import orderRouter from '../../routes/order.routes.js';
 import walletRouter from '../../routes/wallet.routes.js';
 
 import authMiddleware from "../../middleware/verify_session.js";
-import checkoutID_verify from "../../middleware/checkout_verify.js"
-import cloudinary from "../../config/filter.ts";
 
-export default async function routes_api({fastify, db, io, users}: Register_Params){
+export default async function routes_api({fastify, io, users}: Register_Params){
      // ========================== || Routes Definition || ========================== //
      await fastify.register(async (fastify) => {
 
-          fastify.register(userRouter(db, cloudinary, authMiddleware), { prefix: '/api/user' });
-          fastify.register(sellerRouter(db, cloudinary, authMiddleware), { prefix: '/api/seller' });
-          fastify.register(authRouter(db, cloudinary, authMiddleware), { prefix: '/api/auth' });
+          fastify.register(userRouter(), { prefix: '/api/user' });
+          fastify.register(sellerRouter(), { prefix: '/api/seller' });
+          fastify.register(authRouter(), { prefix: '/api/auth' });
           fastify.register( async (scope) => {
                scope.addHook("preHandler", authMiddleware);
-               scope.register(chatRouter(db, io), { prefix: '/api/chat' });
-               scope.register(orderRouter(db), { prefix: '/api/order' });
-               scope.register(walletRouter(db), { prefix: '/api/account' });
+               scope.register(chatRouter(io), { prefix: '/api/chat' });
+               scope.register(orderRouter(), { prefix: '/api/order' });
+               scope.register(walletRouter(), { prefix: '/api/account' });
 
                // checkout scope
-               scope.register(checkoutRouter(db, io, users, checkoutID_verify), { prefix: '/api/verify/checkout' });
+               scope.register(checkoutRouter( io, users),
+               { prefix: '/api/verify/checkout' });
           })
      });
 }

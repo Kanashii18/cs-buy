@@ -1,8 +1,8 @@
 import type { Error_env } from "../types/config_types/errors_type.ts";
 import type { Dev_Mode } from "../types/config_types/values_type.ts";
-import "dotenv/config";
 
-const set_error = (indicated : string, value : Error_env | Dev_Mode ) =>{ throw new Error(`${indicated} ${value}`)};
+import "dotenv/config";
+import set_error from "./error.env.ts";
 
 // PORT
 
@@ -43,4 +43,41 @@ const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
 if(typeof CLOUDINARY_API_SECRET !== "string") 
 set_error("CLOUDINARY_API_SECRET","Invalid type value");
 
-export { Dev,PORT,SECRET_KEY,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET};
+// PAYPAL
+
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
+if(typeof PAYPAL_CLIENT_ID !== "string") 
+set_error("PAYPAL_CLIENT_ID","Invalid type value");
+
+const PAYPAL_SECRET_KEY = process.env.PAYPAL_SECRET_KEY;
+if(typeof PAYPAL_SECRET_KEY !== "string") 
+set_error("PAYPAL_SECRET_KEY","Invalid type value");
+
+// STRIPE
+
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+if(typeof STRIPE_SECRET_KEY !== "string") 
+set_error("STRIPE_SECRET_KEY","Invalid type value");
+
+// DATABASE
+
+const SQL_PASSWORD = process.env.SQL_PASSWORD;
+if(typeof SQL_PASSWORD !== "string") 
+set_error("SQL_PASSWORD","Invalid type value");
+
+// GOOGle
+
+const GOOGLE_VISION = process.env.GOOGLE_VISION;
+if(typeof GOOGLE_VISION !== "string") 
+set_error("GOOGLE_VISION","Invalid type value");
+
+export { Dev,PORT,
+     SECRET_KEY,
+     CLOUDINARY_API_KEY,
+     CLOUDINARY_API_SECRET,
+     STRIPE_SECRET_KEY, 
+     PAYPAL_CLIENT_ID,
+     PAYPAL_SECRET_KEY,
+     SQL_PASSWORD,
+     GOOGLE_VISION
+};

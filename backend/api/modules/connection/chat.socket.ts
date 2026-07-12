@@ -14,7 +14,6 @@ export function chat_network(io : Server, users:Object, socket:Socket, db:DB, us
 
           const socketsInRoom = io.sockets.adapter.rooms.get(String(roomId))?.size || 0 as Number;
           if (socketsInRoom === 1) {
-
                await db(`
                UPDATE chat_user_room_status
                SET 

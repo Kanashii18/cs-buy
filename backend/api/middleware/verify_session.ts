@@ -2,7 +2,7 @@
 
 import type {FastifyRequest, FastifyReply} from "fastify";
 import type { Verify_body } from "../types/middleware/verify_session.type.ts";
-import type { User_Scheme } from "../types/user.type.ts";
+import type { JWT_Scheme, User_Scheme } from "../types/user.type.ts";
 import jwt from 'jsonwebtoken';
 
 /**
@@ -16,11 +16,14 @@ export default function(request:FastifyRequest&Verify_body,reply:FastifyReply) {
      // create userinfo with { id, img, username }
      let userInfo : User_Scheme;
      try {
-          userInfo = jwt.verify(token, process.env.SECRET_KEY) as User_Scheme;
+          userInfo = jwt.verify(token, process.env.SECRET_KEY) as JWT_Scheme;
      }catch{
+          userInfo = {loggedIn: false};
           return reply.code(401).send({error:"Unauthorized"});
      };
-     if(!userInfo.id || !userInfo.img || !userInfo.username) return reply.code(401).send({error:"Miss payload values"});
-     // return object { id, img, username } with user info
+     if(userInfo)
+     if(!userInfo.id || !userInfo.img || !userInfo.username || !userInfo.role) return reply.code(401).send({error:"Miss payload values"});
+     // return object { id, img, username, role } with user info
+
      request.userInfo = userInfo;
 }

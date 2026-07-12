@@ -12,7 +12,7 @@ import type { FastifyInstance } from 'fastify';
 import { PORT, Dev } from './config/env.ts'; 
 
 // middleware...
-import { ensureDevice } from './routes/controllers/user.controller.ts';
+import { ensureDevice } from './routes/controllers/user/index.js';
 
 // modules...
 import { Init_conection } from './modules/connection/set_network.ts';

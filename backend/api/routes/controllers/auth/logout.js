@@ -1,4 +1,4 @@
-export function logout(request, reply) {
+export default function logout(reply) {
      reply.clearCookie("session_token", {
           httpOnly: true,
           secure: false,

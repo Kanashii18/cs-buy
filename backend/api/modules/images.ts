@@ -34,6 +34,15 @@ const image =  {
                     originalUrl: result.secure_url,
                };
           },
+          sign: () => {
+               const timestamp = Math.floor(Date.now() / 1000);
+               const params = { timestamp, folder: "images" };
+
+               return {
+                    timestamp,
+                    signature: ci.utils.api_sign_request(params, process.env.CLOUDINARY_API_SECRET!),
+               };
+          }
      }
 export default image; 
 

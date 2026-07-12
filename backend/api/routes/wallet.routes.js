@@ -1,18 +1,14 @@
 // routes/auth.routes.js
-import { WalletController } from "./controllers/wallet.controller.js";
-
+import { db } from "../scripts/db.js";
+import walletController from "./controllers/wallet/index.js";
 export default function walletRouter(db) {
-     const { available_balance, 
-          total_balance,
-          pending_balance,
-          retire_balance,
-          checkout } = WalletController(db);
-
-     return async function (fastify, options) {
-          fastify.get('/count', total_balance);
-          fastify.get('/available_balance', available_balance);
-          fastify.get("/pending", pending_balance);
-          fastify.post("/withdraw", retire_balance);
-          fastify.post('/wallet/checkout', checkout);
+     const wallet = walletController(db);
+     return async function (fastify) {
+          fastify.get('/count', wallet.totalBalance);
+          fastify.get('/available_balance', wallet.availableBalance);
+          fastify.get('/pending', wallet.pendingBalance);
+          fastify.post('/withdraw', wallet.retireBalance);
+          fastify.post('/wallet/checkout', wallet.checkout);
+          fastify.get('/transactions', wallet.transitions);
      };
 }
