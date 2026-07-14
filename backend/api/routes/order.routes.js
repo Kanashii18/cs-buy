@@ -1,4 +1,4 @@
-import { orderController } from './controllers/order/order.controller.js';
+import { orderController } from './controllers/order/index.js';
 
 export default function orderRouter(db) {
      const order = orderController(db);

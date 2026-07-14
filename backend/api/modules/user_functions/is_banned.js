@@ -1,4 +1,4 @@
-export async function isBanned(db, { userId = "", deviceId = "", ip = "" }) {
+export default async function isBanned(db, { userId = "", deviceId = "", ip = "" }) {
 
      const rows = await db(
           `SELECT 1

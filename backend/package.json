@@ -43,10 +43,14 @@
     "winston": "^3.19.0"
   },
   "devDependencies": {
+    "@babel/core": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
+    "@babel/preset-typescript": "^8.0.1",
     "@eslint/js": "^9.29.0",
     "@types/jest": "^30.0.0",
     "@types/next": "^8.0.7",
     "@types/node": "^26.1.1",
+    "babel-jest": "^30.4.1",
     "concurrently": "^9.2.0",
     "eslint": "^9.29.0",
     "globals": "^16.2.0",

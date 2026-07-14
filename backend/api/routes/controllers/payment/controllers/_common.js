@@ -6,7 +6,7 @@ import {
      PAYPAL_CLIENT_ID,
      PAYPAL_SECRET_KEY,
      STRIPE_SECRET_KEY
-} from '../../../config/env.js';
+} from '../../../../config/env';
 
 const Set_orders = {
      account: Order_account,

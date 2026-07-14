@@ -1,4 +1,3 @@
-import { gestionProduct } from '../seller.product.controller.js';
 
 export default async function getAssets({db, reply}) {
      try {

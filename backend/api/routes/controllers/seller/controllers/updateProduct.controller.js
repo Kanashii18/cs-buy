@@ -1,4 +1,4 @@
-import { GOOGLE_VISION } from '../../../../config/env.js';
+import { GOOGLE_VISION } from '../../../../config/env.ts';
 import vision from '@google-cloud/vision';
 import { randomUUID } from 'crypto';
 import fs from "fs";

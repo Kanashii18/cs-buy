@@ -1,6 +1,12 @@
 import Fastify from 'fastify';
 import '@fastify/cookie';
 import next from "next";
+// Server config
+import { 
+     bodyLimit,
+     dir,     
+     host
+} from "./config/server_config.ts";
 // Load environment variables
 import 'dotenv/config';
 
@@ -26,30 +32,37 @@ import {db} from "./scripts/db.ts";
 // ej backend/api/api.ks | frontend/
 const app = next({
      dev:Dev,
-     dir:"../frontend"
+     dir:dir
 });
 
 const handle = app.getRequestHandler();
 await app.prepare();
-
-// Initialize Fastify app
 const fastify : FastifyInstance = Fastify({
      logger: {level: "warn"},
-     bodyLimit: 4 * 1024 * 1024 // 4mb
-});
-fastify.addHook('preHandler', ensureDevice);
-
-// ========================================================== //
-const {io, users} : {io:Server, users} = Init_conection(fastify, db);
-registers_api({fastify, db, io, users}); // registers api and routes definition 
-
-// Catch-all route for SPA
-fastify.all("/*", async (req, reply) => {
-     if (req.raw.url?.startsWith("/api")) return reply.callNotFound();
-
-     await handle(req.raw, reply.raw);
-     reply.hijack();
+     bodyLimit: bodyLimit // 4mb
 });
 
-// =====================|| Set Server ||===================== //
-fastify.listen({ port:PORT, host: "0.0.0.0" });
+( async function() {
+    // Initialize Fastify app
+     
+     fastify.addHook('preHandler', ensureDevice);
+
+     // ========================================================== //
+     const {io, users} : {io:Server, users} = Init_conection(fastify, db);
+     registers_api({fastify, db, io, users}); // registers api and routes definition 
+
+     // Catch-all route for SPA
+     fastify.all("/*", async (req, reply) => {
+          if (req.raw.url?.startsWith("/api")) return reply.callNotFound();
+
+          await handle(req.raw, reply.raw);
+          reply.hijack();
+     });
+
+     // =====================|| Set Server ||===================== //
+     process.env.NODE_ENV !== "test" ?
+     await fastify.listen({ port:PORT, host: host })
+     :null;
+}())
+
+export default fastify;

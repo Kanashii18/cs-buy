@@ -1,6 +1,7 @@
-import mysql, { Pool } from "mysql2/promise";
+import mysql from "mysql2/promise";
+import type { Pool } from "mysql2/promise";
 import 'dotenv/config';
-import { SQL_PASSWORD } from "../config/env.ts";
+import { CA_PEM, SQL_PASSWORD } from "../config/env.ts";
 
 // Load environment variables
 // ======================== | DB | ======================== //
@@ -14,7 +15,7 @@ const db_conection : Pool = mysql.createPool({
      waitForConnections: true,
      connectionLimit: 10,
      queueLimit: 0,
-     ssl: { ca: process.env.CA_PEM },
+     ssl: { ca: CA_PEM },
 });
 
 const db = async <T>( query:string, params: unknown[] = [] ): Promise<T>=>    {

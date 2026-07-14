@@ -1,5 +1,6 @@
 import winston from 'winston';
 import type CustomLogger from "../types/modules/logger.type.ts";
+import { LogLevel } from 'fastify';
 const logger = winston.createLogger({
      level: 'info',
      format: winston.format.combine(
@@ -15,7 +16,7 @@ const logger = winston.createLogger({
 
 export default function (service: string): CustomLogger {
      return {
-          log: (message: string, option: string = 'info') => {
+          log: (message: string, option: LogLevel) => {
                logger.log(option, { service, message });
           }
      };

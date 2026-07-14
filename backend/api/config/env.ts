@@ -1,4 +1,3 @@
-import type { Error_env } from "../types/config_types/errors_type.ts";
 import type { Dev_Mode } from "../types/config_types/values_type.ts";
 
 import "dotenv/config";
@@ -65,13 +64,20 @@ const SQL_PASSWORD = process.env.SQL_PASSWORD;
 if(typeof SQL_PASSWORD !== "string") 
 set_error("SQL_PASSWORD","Invalid type value");
 
+const CA_PEM = process.env.CA_PEM;
+if(typeof CA_PEM !== "string") 
+set_error("CA_PEM","Invalid type value");
+
 // GOOGle
 
 const GOOGLE_VISION = process.env.GOOGLE_VISION;
 if(typeof GOOGLE_VISION !== "string") 
 set_error("GOOGLE_VISION","Invalid type value");
 
-export { Dev,PORT,
+
+export { 
+     Dev,
+     PORT,
      SECRET_KEY,
      CLOUDINARY_API_KEY,
      CLOUDINARY_API_SECRET,
@@ -79,5 +85,6 @@ export { Dev,PORT,
      PAYPAL_CLIENT_ID,
      PAYPAL_SECRET_KEY,
      SQL_PASSWORD,
-     GOOGLE_VISION
+     GOOGLE_VISION,
+     CA_PEM
 };

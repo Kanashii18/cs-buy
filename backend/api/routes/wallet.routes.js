@@ -1,5 +1,4 @@
 // routes/auth.routes.js
-import { db } from "../scripts/db.js";
 import walletController from "./controllers/wallet/index.js";
 export default function walletRouter(db) {
      const wallet = walletController(db);
@@ -9,6 +8,7 @@ export default function walletRouter(db) {
           fastify.get('/pending', wallet.pendingBalance);
           fastify.post('/withdraw', wallet.retireBalance);
           fastify.post('/wallet/checkout', wallet.checkout);
+          fastify.post('/get-wallet', wallet.getWallet);
           fastify.get('/transactions', wallet.transitions);
      };
 }
