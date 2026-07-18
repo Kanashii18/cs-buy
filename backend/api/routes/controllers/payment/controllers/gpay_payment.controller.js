@@ -1,10 +1,10 @@
 import { stripe as defaultStripe } from './_common.js';
 
-export default async function gpay_payment({dependencies = {}, request, reply}) {
+export default async function gpay_payment({ request, reply}) {
      try {
           const { product } = request.body;
 
-          const paymentStripe = dependencies.stripe ?? defaultStripe;
+          const paymentStripe = defaultStripe;
 
           const paymentIntent = await paymentStripe.paymentIntents.create({
                amount: product.price * 100,

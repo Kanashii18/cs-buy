@@ -1,7 +1,7 @@
 import { paypal as defaultPaypal } from './_common.js';
 
-export default function paypal_payment({dependencies = {}, request, reply}) {
-     const paypalLib = dependencies.paypal ?? defaultPaypal;
+export default function paypal_payment({ request, reply}) {
+     const paypalLib = defaultPaypal;
      const { amount, paymentId, payerId } = request.body;
 
      const payment_data = {

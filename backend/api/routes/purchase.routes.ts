@@ -2,11 +2,13 @@
 import checkoutController from './controllers/checkout/index.js';
 import paymentController from './controllers/payment/index.js';
 import checkoutID_verify from '../middleware/checkout_verify.ts';
+import type { DB } from '../types/db.type.ts';
+import type { Server } from 'socket.io';
 
-export default function purchaseRouter(db, io, users, dependencies) {
+export default function purchaseRouter({db, io, users} : {db:DB, io:Server, users:Object}) {
 
      const checkout = checkoutController(db, io, users);
-     const payment = paymentController(db, io, users, dependencies);
+     const payment = paymentController(db, io, users);
      return async function (fastify) {
           fastify.post('/token', checkout.get_session);
           fastify.get('/product', checkout.getCheckoutProduct);

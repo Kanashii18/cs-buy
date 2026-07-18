@@ -1,6 +1,6 @@
 import { stripe as defaultStripe } from './_common.js';
 
-export default async function stripe_payment({ dependencies = {}, request, reply }) {
+export default async function stripe_payment({ request, reply }) {
      const product = request.product;
      const userInfo = request.userInfo;
      const { payment_method } = request.body;
@@ -13,7 +13,7 @@ export default async function stripe_payment({ dependencies = {}, request, reply
      const amountInCents = Math.round(priceUSD * 100);
 
      try {
-          const paymentStripe = dependencies.stripe ?? defaultStripe;
+          const paymentStripe = defaultStripe;
 
           const paymentIntent = await paymentStripe.paymentIntents.create({
                amount: amountInCents,

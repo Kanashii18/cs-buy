@@ -1,6 +1,6 @@
 import { randomUUID, Set_orders, stripe as defaultStripe } from './_common.js';
 
-export default async function stripe_status({db, io, users, dependencies = {}, request, reply}) {
+export default async function stripe_status({db, io, users, request, reply}) {
      const userInfo = request.userInfo;
      const product = request.product;
      const { paymentIntentId } = request.body;
@@ -8,7 +8,7 @@ export default async function stripe_status({db, io, users, dependencies = {}, r
      if (!paymentIntentId) return reply.code(400).send({ error: 'Payment intent id is required.' });
 
      try {
-          const paymentStripe = dependencies.stripe ?? defaultStripe;
+          const paymentStripe = defaultStripe;
           const paymentIntent_response = await paymentStripe.paymentIntents.retrieve(paymentIntentId);
 
           if (paymentIntent_response.status !== 'requires_capture') {
