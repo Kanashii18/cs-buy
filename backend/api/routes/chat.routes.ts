@@ -1,7 +1,7 @@
 import chatController from './controllers/chat/overview/index.js';
 import messageController from './controllers/chat/messages/index.ts';
-import { DB } from '../types/db.type.ts';
-import { FastifyInstance } from 'fastify';
+import type { DB } from '../types/db.type.ts';
+import type { FastifyInstance } from 'fastify';
 
 export default function chatRouter(db : DB) {
      const chat = chatController(db);

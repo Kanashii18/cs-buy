@@ -5,12 +5,13 @@ import logout from "./controllers/auth/logout.js";
 
 // middleware...
 import authMiddleware from "../middleware/verify_session.ts";
-import { DB } from "../types/db.type.ts";
+import type { DB } from "../types/db.type.ts";
 import type { Filter } from "../types/config_types/filter.type.ts";
+import type { FastifyInstance } from "fastify";
 
 export default function authRouter(db: DB, ci: Filter) {
      const check = checkController(db, ci);
-     return async function (fastify) {
+     return async function (fastify:FastifyInstance) {
           fastify.get("/user-check", check.userCheck);
           fastify.get('/profile', check.profile);
           fastify.get("/setting-check", check.settingCheck);
