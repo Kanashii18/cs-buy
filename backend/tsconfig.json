@@ -13,6 +13,6 @@
           "noEmit": true,
           "allowImportingTsExtensions": true
      },
-     "include": ["./api/**/*.ts"],
+     "include": ["./api/**/*.ts", "api/routes/controllers/chat/overview/index.js"],
      "exclude": ["node_modules"]
 }

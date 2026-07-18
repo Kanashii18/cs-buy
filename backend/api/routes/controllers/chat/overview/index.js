@@ -1,6 +1,6 @@
-import getProductController from "./controllers/get_product.controller";
-import markAsReadController from "./controllers/mark_as_read.controller";
-import overviewController from "./controllers/overview.controller";
+import getProductController from "./controllers/get_product.controller.js";
+import markAsReadController from "./controllers/mark_as_read.controller.js";
+import overviewController from "./controllers/overview.controller.js";
 
 export default function overviewsController(db, request, reply) {
      return {

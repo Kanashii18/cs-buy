@@ -1,13 +1,12 @@
 import type { Register_Params } from '../../types/modules/registers/registers.type.js';
 // Routes
-import userRouter from '../../routes/user.routes.js';
-import authRouter from '../../routes/auth.routes.js';
-import chatRouter from '../../routes/chat.routes.js';
-import sellerRouter from '../../routes/seller.routes.js';
-import checkoutRouter from '../../routes/purchase.routes.js';
-import orderRouter from '../../routes/order.routes.js';
-import walletRouter from '../../routes/wallet.routes.js';
-
+import userRouter from '../../routes/user.routes.ts';
+import authRouter from '../../routes/auth.routes.ts';
+import chatRouter from '../../routes/chat.routes.ts';
+import sellerRouter from '../../routes/seller.routes.ts';
+import checkoutRouter from '../../routes/purchase.routes.ts';
+import orderRouter from '../../routes/order.routes.ts';
+import walletRouter from '../../routes/wallet.routes.ts';
 import authMiddleware from "../../middleware/verify_session.js";
 
 export default async function routes_api({fastify, io, users}: Register_Params){

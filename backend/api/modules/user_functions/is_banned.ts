@@ -1,4 +1,7 @@
-export default async function isBanned(db, { userId = "", deviceId = "", ip = "" }) {
+import { DB } from "../../types/db.type.ts";
+
+// check if user is banned
+export default async function isBanned(db : DB, { userId = "", deviceId = "", ip = "" }) {
 
      const rows = await db(
           `SELECT 1
@@ -12,6 +15,8 @@ export default async function isBanned(db, { userId = "", deviceId = "", ip = ""
                LIMIT 1`,
           [userId, deviceId, ip]
      );
-
+     if(!Array.isArray(rows)){
+          throw new Error("Invalid database response");
+     }
      return rows.length > 0;
 }

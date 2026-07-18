@@ -1,4 +1,5 @@
-export default function Generate_Username() {
+// return a random name from a array
+export default function Generate_Username() : string {
      const words = [
           "raiden", "akira", "nezuko", "shinobi", "ryuji", "hollow", "kuro", "sakura",
           "vortex", "onyx", "kaizen", "asura", "phantasm", "reaper", "tensei", "yurei",

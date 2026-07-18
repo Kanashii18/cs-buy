@@ -1,11 +1,13 @@
 import chatController from './controllers/chat/overview/index.js';
-import messageController from './controllers/chat/messages/index.js';
+import messageController from './controllers/chat/messages/index.ts';
+import { DB } from '../types/db.type.ts';
+import { FastifyInstance } from 'fastify';
 
-export default function chatRouter(db) {
+export default function chatRouter(db : DB) {
      const chat = chatController(db);
      const message = messageController(db);
 
-     return async function (fastify) {
+     return async function (fastify : FastifyInstance) {
           fastify.get('/overview', chat.overview);
           fastify.get('/listener', chat.getProduct);
           fastify.put('/markAsRead', chat.markAsRead);
