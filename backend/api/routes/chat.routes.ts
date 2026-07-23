@@ -1,4 +1,4 @@
-import chatController from './controllers/chat/overview/index.js';
+import chatController from './controllers/chat/overview/index.ts';
 import messageController from './controllers/chat/messages/index.ts';
 import type { DB } from '../types/db.type.ts';
 import type { FastifyInstance } from 'fastify';

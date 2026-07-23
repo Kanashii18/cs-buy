@@ -1,11 +1,15 @@
-export default async ({ db, request, reply }) => {
+import { ResultSetHeader } from "mysql2";
+import { ChatParams } from "../../../../../types/chat/overview.type.ts";
+import { IdBody } from "../../../../../types/request.type.ts";
 
+export default async ({ db, request, reply } : ChatParams<IdBody>) : Promise<void> => {
+     
      const user = request.userInfo;
      const senderUserId = request.body.id;
 
      try {
           // Actualizate chat_room with the corresponding order 
-          const info = await db(`
+          const info = await db<ResultSetHeader>(`
                UPDATE chat_user_room_status
                SET
                unread_count_user_1 = CASE WHEN user_id = ? THEN 0 ELSE unread_count_user_1 END,
@@ -16,12 +20,12 @@ export default async ({ db, request, reply }) => {
 
 
           if (info.affectedRows === 0) {
-               return reply.code(404).send({ error: 'No se encontró la conversación' });
+               return await reply.code(404).send({ error: 'No se encontró la conversación' });
           }
 
-          return reply.send({ success: true });
+          return await reply.send({ success: true });
      } catch (err) {
           console.error(err);
-          return reply.code(500).send({ error: 'Error de base de datos' });
+          return await reply.code(500).send({ error: 'Error de base de datos' });
      }
 }

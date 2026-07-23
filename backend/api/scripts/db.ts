@@ -23,7 +23,7 @@ const db : DB = async <T>( query:string, params: unknown[] = [] ): Promise<T>=> 
           if(typeof query !== "string" || Array.isArray(params)) {
                throw new Error("Invalid type query in db");
           }
-          const [rows] = await db_conection.execute<RowDataPacket[]>(query, params);
+          const [rows] = await db_conection.execute(query, params);
           return rows as T;
      }
 export {db, db_conection as pool };

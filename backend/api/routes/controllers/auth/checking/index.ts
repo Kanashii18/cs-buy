@@ -10,14 +10,25 @@ import type { Filter } from '../../../../types/config_types/filter.type.ts';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { IdBody, IdQuery, UploadRequest } from '../../../../types/request.type.ts';
 
+/**
+ * This function returns an object containing the user check controllers.
+ * @returns An object with the user check controllers.
+ */
 export default function userCheck_controller(db : DB, ci: Filter){
      return {
+          // Check if the user has a valid session
           sessionCheck: (request : FastifyRequest, reply : FastifyReply) => sessionCheck({db, request, reply}),
+          // Check if the user exists in the database
           userCheck: (request : FastifyRequest<{Querystring:IdQuery}>, reply : FastifyReply) => userCheck({ db, request, reply }),
+          // Check if the user is a seller
           sellerCheck: (request : FastifyRequest<{Body:IdBody}>, reply : FastifyReply) => sellerCheck({ request, reply, db }),
+          // Check if the user has a valid session and is a seller
           settingCheck: (request : FastifyRequest<{Querystring:IdQuery}>, reply : FastifyReply) => settingCheck({ request, reply, db }),
+          // Check if the user has a valid session and is a seller
           imgCheck: (request : FastifyRequest<{Querystring:IdQuery}>, reply : FastifyReply) => imgCheck({ request, reply, ci }),
+          // Check if the user has a valid session and is a seller
           moderationCheck: (request : UploadRequest, reply : FastifyReply) => moderationCheck({ ci, request, reply }),
+          // Check if the user has a valid session and is a seller
           profile: (request : FastifyRequest<{Querystring:IdQuery}>, reply : FastifyReply) => profile({ db, request, reply })
      };
 };
