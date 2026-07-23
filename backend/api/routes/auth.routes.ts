@@ -1,7 +1,7 @@
 // routes/auth.routes.js
 import checkController from "./controllers/auth/checking/index.js";
 
-import logout from "./controllers/auth/logout.js";
+import logout from "./controllers/auth/logout.ts";
 
 // middleware...
 import authMiddleware from "../middleware/verify_session.ts";

@@ -1,6 +1,4 @@
-import { QueryResult } from "mysql2";
-
-export type DB = <T extends QueryResult>(
+export type DB = <T>(
      query:string,
      params:unknown[]
 ) => Promise<T>;

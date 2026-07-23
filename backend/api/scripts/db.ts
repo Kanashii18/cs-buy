@@ -1,7 +1,8 @@
 import mysql from "mysql2/promise";
-import type { Pool } from "mysql2/promise";
+import type { Pool, RowDataPacket } from "mysql2/promise";
 import 'dotenv/config';
 import { CA_PEM, SQL_PASSWORD } from "../config/env.ts";
+import { DB } from "../types/db.type.ts";
 
 // Load environment variables
 // ======================== | DB | ======================== //
@@ -18,12 +19,11 @@ const db_conection : Pool = mysql.createPool({
      ssl: { ca: CA_PEM },
 });
 
-const db = async <T>( query:string, params: unknown[] = [] ): Promise<T>=>    {
+const db : DB = async <T>( query:string, params: unknown[] = [] ): Promise<T>=>    {
           if(typeof query !== "string" || Array.isArray(params)) {
                throw new Error("Invalid type query in db");
           }
-          const [rows] = await db_conection.execute(query, params);
+          const [rows] = await db_conection.execute<RowDataPacket[]>(query, params);
           return rows as T;
      }
 export {db, db_conection as pool };
-
