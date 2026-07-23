@@ -1,18 +1,20 @@
-export default async function({db, request, reply}) {
+import type { QueryResult } from "mysql2";
+import type { Checkout, product_id, session_id } from "../../../../types/checkout/index.type.ts";
+
+export default async function({db, request, reply} : Checkout.Params<unknown, session_id>) : Promise<void> {
      const userInfo = request.userInfo;
      const checkout_id = request.query.session_id;
 
      try {
-          const query = `
+          const session = await db<product_id[]>(`
                SELECT 
                     product_id
                FROM Checkout_id
                WHERE id = ? AND user_id = ? AND expires_at > NOW();
-          `;
-          const session = await db(query, [checkout_id, userInfo.id]);
-          if (session.length === 0) return reply.code(404).send({ error: 'Expired Or Invalid Session' });
+          `, [checkout_id, userInfo.id]);
+          if (session.length === 0) return await reply.code(404).send({ error: 'Expired Or Invalid Session' });
 
-          const query_product = `
+          const product = await db<QueryResult[]>(`
                SELECT 
                     p.product_id,
                     u.user_id,
@@ -27,13 +29,12 @@ export default async function({db, request, reply}) {
                FROM Products p
                JOIN Users u ON p.user_id = u.user_id
                WHERE p.product_id = ? AND p.quantity > 0 AND p.deleted = 0;
-          `;
-          const product = await db(query_product, [session[0].product_id]);
+          `, [session[0].product_id]);
 
-          if (product.length === 0) return reply.code(404).send({ error: 'Non-existent Product' });
-          return reply.code(200).send(product[0]);
+          if (product.length === 0) return await reply.code(404).send({ error: 'Product not found' });
+          return await reply.code(200).send(product[0]);
      } catch (error) {
           console.error('Error getting product:', error.message);
-          return reply.code(500).send({ error: 'Error getting product' });
+          return await reply.code(500).send({ error: 'Error getting product' });
      }
 }

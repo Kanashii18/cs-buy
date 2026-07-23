@@ -1,5 +1,5 @@
 // routes/seller.routes.js
-import checkoutController from './controllers/checkout/index.js';
+import checkoutController from './controllers/checkout/index.ts';
 import paymentController from './controllers/payment/index.js';
 import checkoutID_verify from '../middleware/checkout_verify.ts';
 import type { DB } from '../types/db.type.ts';

@@ -1,5 +1,5 @@
 import mysql from "mysql2/promise";
-import type { Pool, RowDataPacket } from "mysql2/promise";
+import type { Pool } from "mysql2/promise";
 import 'dotenv/config';
 import { CA_PEM, SQL_PASSWORD } from "../config/env.ts";
 import { DB } from "../types/db.type.ts";
