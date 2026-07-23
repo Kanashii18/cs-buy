@@ -1,4 +1,5 @@
 import { UUID } from "node:crypto";
+export type User_ID = UUID;
 
 export type JWT_Scheme = 
      {
