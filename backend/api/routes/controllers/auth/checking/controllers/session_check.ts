@@ -31,7 +31,7 @@ export default async function ({db, request, reply} : {db:DB, request: FastifyRe
           });
 
      } catch (error) {
-          console.log("error en el login\n\n\n\n",error);
+          console.log(error);
           await reply.send({ loggedIn: false, error: "Server Error" });
      }
 }

@@ -29,7 +29,7 @@ export default async function({ db, request, reply } : {db:DB, request: FastifyR
                return await reply.status(500).send({ error: 'Database query error' });
           }
      } catch (error) {
-          console.error('Unexpected error:', error);
+          console.error(error);
           return await reply.status(500).send({ error: 'Database query error' });
      }
 }

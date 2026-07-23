@@ -22,7 +22,7 @@ export default async function({ db, request, reply } : {db: DB, request: Fastify
 
           return reply.send(results[0]);
      } catch (err) {
-          console.error('Error querying users table:', err);
+          console.error(err);
           return await reply.status(500).send({ error: 'Internal server error' });
      }
 }
