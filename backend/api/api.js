@@ -355,11 +355,14 @@ fastify.get("/", async () => {
 
 
 // Catch-all route for SPA
-fastify.all("/*", async (req, reply) => {
-     if (req.raw.url?.startsWith("/api")) return reply.callNotFound();
+fastify.get("/", async (request, reply) => {
+    console.log("🔥🔥🔥 LLEGUÉ A LA RUTA ROOT 🔥🔥🔥");
 
-     await handle(req.raw, reply.raw);
-     reply.hijack();
+    return reply.code(200).send({
+        status: "online",
+        message: "CS Buy API is running",
+        timestamp: Date.now()
+    });
 });
 
 // =====================|| Set Server ||===================== //
