@@ -355,4 +355,4 @@ fastify.all("/*", async (req, reply) => {
 });
 
 // =====================|| Set Server ||===================== //
-await fastify.listen({ port:4038, host: "0.0.0.0" }); y aun asi, sigue diciendo not found
+await fastify.listen({ port:4038, host: "0.0.0.0" });
