@@ -346,24 +346,13 @@ fastify.register(async (fastify) => {
      })
 });
 
-fastify.get("/", async () => {
-    return {
-        status: "online",
-        message: "CS Buy API is running"
-    };
-});
-
-
 // Catch-all route for SPA
-fastify.get("/", async (request, reply) => {
-    console.log("🔥🔥🔥 LLEGUÉ A LA RUTA ROOT 🔥🔥🔥");
+fastify.all("/*", async (req, reply) => {
+     if (req.raw.url?.startsWith("/api")) return reply.callNotFound();
 
-    return reply.code(200).send({
-        status: "online",
-        message: "CS Buy API is running",
-        timestamp: Date.now()
-    });
+     await handle(req.raw, reply.raw);
+     reply.hijack();
 });
 
 // =====================|| Set Server ||===================== //
-await fastify.listen({ port:4038, host: "0.0.0.0" });
+await fastify.listen({ port:4038, host: "0.0.0.0" }); y aun asi, sigue diciendo not found
