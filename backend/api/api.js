@@ -346,6 +346,14 @@ fastify.register(async (fastify) => {
      })
 });
 
+fastify.get("/", async () => {
+    return {
+        status: "online",
+        message: "CS Buy API is running"
+    };
+});
+
+
 // Catch-all route for SPA
 fastify.all("/*", async (req, reply) => {
      if (req.raw.url?.startsWith("/api")) return reply.callNotFound();
