@@ -2,7 +2,7 @@
 
 ## pagina marketplace en desarrollo, actualmente cerca de termina el prototipo funcional.
 
-![Cs-Buy logo](https://cs-buy-api.onrender.com/assets/icons/logo.svg)
+<img src="https://cs-buy-api.onrender.com/assets/icons/logo.svg" alt="Cs-Buy logo" width="150">
 
 # Tecnologies
 - React, Node.js, Next.js
