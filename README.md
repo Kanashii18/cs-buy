@@ -18,7 +18,7 @@
 </p>
 
 <h2 align="center">Frameworks</h2>
-- Tailwind, Fastify, Socket.io, Jwt, Sql12, Crypto, Typescript, Jest
+- Tailwind, Fastify, Socket.io, Jwt, Sql12, Crypto, Typescript, Jest, Cloudinary, Stripe, Paypal
 
 <h2 align="center">Instalation and Execution </h2>
 <ul>
