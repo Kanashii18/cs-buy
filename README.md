@@ -6,9 +6,16 @@
 </p>
 
 <h2 align="center">Technologies</h2>
-- React <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="14" alt="React" style="vertical-align: middle;">
-- Node.js <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" width="14" alt="Node.js" style="vertical-align: middle;">
-- Next.js <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" width="15" top="5" alt="Next.js" style="vertical-align: middle;">
+<p align="center">
+  React
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="20" alt="React" style="vertical-align: middle;">
+
+  Node.js
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" width="20" alt="Node.js" style="vertical-align: middle;">
+
+  Next.js
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" width="20" alt="Next.js" style="vertical-align: middle;">
+</p>
 
 <h2 align="center">Frameworks</h2>
 - Tailwind, Fastify, Socket.io, Jwt, Sql12, Crypto, Typescript, Jest
