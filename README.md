@@ -20,7 +20,7 @@
 <h2 align="center">Frameworks</h2>
 - Tailwind, Fastify, Socket.io, Jwt, Sql12, Crypto, Typescript, Jest
 
-<h2 align="center">Instalation and Execution</h2>
+<h2 align="center" align="center">Instalation and Execution </h2>
 - npm run install
 - npm run build
 - npm run api
