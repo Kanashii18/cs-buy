@@ -21,12 +21,12 @@
 - Tailwind, Fastify, Socket.io, Jwt, Sql12, Crypto, Typescript, Jest
 
 <h2 align="center">Instalation and Execution </h2>
-<li>
-- npm run install
-- npm run build
-- npm run api
-- Server gonna listen to 127.0.0.7:4038
-</li>
+<ul>
+  <li><code>npm run install</code></li>
+  <li><code>npm run build</code></li>
+  <li><code>npm run api</code></li>
+  <li>Server will listen on <code>127.0.0.7:4038</code></li>
+</ul>
 
 <h1 align="center">Architecture</h1>
 Backend ->
