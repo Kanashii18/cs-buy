@@ -20,6 +20,39 @@
 <h2 align="center">Frameworks</h2>
 - Tailwind, Fastify, Socket.io, Jwt, Sql12, Crypto, Typescript, Jest
 
+<h2 align="center">Instalation and Execution</h2>
+- npm run install
+- npm run build
+- npm run api
+- Server gonna listen to 127.0.0.7:4038
+
+<h1>Architecture</h1>
+Backend ->
+[ 
+  api "root backend archive"->
+    modules "tools that we use in the app" ->
+      images.js "module to filter nsfw images using cloudinary api"
+      index.js "barriel where modules are called"
+      logger.js "module to make logs using winston"
+    routes ->
+      controllers ->
+      auth.routes.ts "route where user can log out, log in, verify session, validate images, modify profile and get profile information"
+      chat.routes.ts "route to control chat, session chat and notifications"
+      order.routes.ts "route to verify order buyed, get a cancelation for some reason and get buyed orders list" 
+      purchase.routes.ts "route to manage checkout buy section, complete order or cancel session, we use Stripe, Paypal and Bitcoin as payment method
+      seller.routes.ts ""
+      user.routes.ts
+      wallet.routes.ts
+    scripts ->
+    config ->
+    middleware ->
+    tests ->
+    types ->
+    api.js ""
+    robots.txt ""
+  metadata ->
+]
+  
 <h2 align="center">Testing</h2>
 - I implemented **Jest** for testing
 
