@@ -6,8 +6,8 @@
 </p>
 
 <h2 align="center">Technologies</h2>
-<p align="center">
-  Reac
+<p>
+  React
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="20" alt="React">
 
   Node.js
