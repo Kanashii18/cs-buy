@@ -20,13 +20,15 @@
 <h2 align="center">Frameworks</h2>
 - Tailwind, Fastify, Socket.io, Jwt, Sql12, Crypto, Typescript, Jest
 
-<h2 align="center" align="center">Instalation and Execution </h2>
+<h2 align="center">Instalation and Execution </h2>
+<p>
 - npm run install
 - npm run build
 - npm run api
 - Server gonna listen to 127.0.0.7:4038
+</p>
 
-<h1>Architecture</h1>
+<h1 align="center">Architecture</h1>
 Backend ->
 [ 
   api "root backend archive"->
