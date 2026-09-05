@@ -21,12 +21,12 @@
 - Tailwind, Fastify, Socket.io, Jwt, Sql12, Crypto, Typescript, Jest
 
 <h2 align="center">Instalation and Execution </h2>
-<p>
+<li>
 - npm run install
 - npm run build
 - npm run api
 - Server gonna listen to 127.0.0.7:4038
-</p>
+</li>
 
 <h1 align="center">Architecture</h1>
 Backend ->
