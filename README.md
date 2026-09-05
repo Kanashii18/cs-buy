@@ -62,13 +62,11 @@ Backend
 - I implemented **Jest** for testing
 
 <h2>Concept about the app</h2>
-- Cs-buy marketplace is c2c, i structure the proyect to be used for consumers and by consumers, i implemented chat realtime with socket.io for comunication with seller, when consumer buyer buy something, the seller need to wait for 5 days or wait for confirmation by the buyer, we implement an escrow lite to prevent scam, where money gonna wait in stripe all the time and later gonna be sended to seller wallet, app was create with a lazy load  
+- Cs-buy marketplace is c2c, i structure the proyect to be used for consumers and by consumers, i implemented chat realtime with socket.io for comunication with seller, when consumer buyer buy something, the seller need to wait for 5 days or wait for confirmation by the buyer, we implement an escrow lite to prevent scam, where money gonna wait in stripe all the time and later gonna be sended to seller wallet, app was create as an fast and optimized page, thats why i implement lazy load with next.js for not reload content when we go to other section, i gonna implement redis later for cache optimization in memory 
 
-## Sobre mi
-aunque me gusta mucho mas el desarrollo Backend actualmente estoy trabajando de forma autodidacta en el desarrollo de una pagina marketplace,
-utilizo React, Vite, frameworks como framer-motion en la infraestructura del proyecto...
+##  About me 
 
-- Siente libre de querer hablar si asi lo deseas, me gusta tanto ayudar como ser ayudado ^^.
+- Feel free wht asking me something, i love speak and help ^^.
 
 - [mi telegram](https://t.me/Kanashii188)
 - mi discord: [kanashii18](https://www.discord.com/)
