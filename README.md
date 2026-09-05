@@ -57,9 +57,12 @@ Backend
 │   └── robots.txt
 │
 └── metadata/
-  
+```  
 <h2 align="center">Testing</h2>
 - I implemented **Jest** for testing
+
+<h2>Concept about the app</h2>
+- Cs-buy marketplace is c2c, i structure the proyect to be used for consumers and by consumers, i implemented chat realtime with socket.io for comunication with seller, when consumer buyer buy something, the seller need to wait for 5 days or wait for confirmation by the buyer, we implement an escrow lite to prevent scam, where money gonna wait in stripe all the time and later gonna be sended to seller wallet, app was create with a lazy load  
 
 ## Sobre mi
 aunque me gusta mucho mas el desarrollo Backend actualmente estoy trabajando de forma autodidacta en el desarrollo de una pagina marketplace,
