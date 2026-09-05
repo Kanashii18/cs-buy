@@ -29,31 +29,34 @@
 </ul>
 
 <h1 align="center">Architecture</h1>
-Backend ->
-[ 
-  api "root backend archive"->
-    modules "tools that we use in the app" ->
-      images.js "module to filter nsfw images using cloudinary api"
-      index.js "barriel where modules are called"
-      logger.js "module to make logs using winston"
-    routes ->
-      controllers ->
-      auth.routes.ts "route where user can log out, log in, verify session, validate images, modify profile and get profile information"
-      chat.routes.ts "route to control chat, session chat and notifications"
-      order.routes.ts "route to verify order buyed, get a cancelation for some reason and get buyed orders list" 
-      purchase.routes.ts "route to manage checkout buy section, complete order or cancel session, we use Stripe, Paypal and Bitcoin as payment method
-      seller.routes.ts ""
-      user.routes.ts
-      wallet.routes.ts
-    scripts ->
-    config ->
-    middleware ->
-    tests ->
-    types ->
-    api.js ""
-    robots.txt ""
-  metadata ->
-]
+
+```text
+Backend
+├── api/                         # Root backend directory
+│   ├── modules/                 # Tools used by the application
+│   │   ├── images.js            # NSFW image filtering using Cloudinary API
+│   │   ├── index.js             # Entry point where modules are loaded
+│   │   └── logger.js            # Logging with Winston
+│   │
+│   ├── routes/
+│   │   ├── controllers/
+│   │   ├── auth.routes.ts       # Authentication, sessions and profile
+│   │   ├── chat.routes.ts       # Chat, sessions and notifications
+│   │   ├── order.routes.ts      # Orders, cancellations and order history
+│   │   ├── purchase.routes.ts   # Checkout and payments
+│   │   ├── seller.routes.ts
+│   │   ├── user.routes.ts
+│   │   └── wallet.routes.ts
+│   │
+│   ├── scripts/
+│   ├── config/
+│   ├── middleware/
+│   ├── tests/
+│   ├── types/
+│   ├── api.js
+│   └── robots.txt
+│
+└── metadata/
   
 <h2 align="center">Testing</h2>
 - I implemented **Jest** for testing
