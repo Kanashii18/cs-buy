@@ -1,10 +1,11 @@
 # CS-Buy Page
 
 ## pagina marketplace en desarrollo, actualmente cerca de termina el prototipo funcional.
-
+<p align="center">
 <img src="https://cs-buy-api.onrender.com/assets/icons/logo.svg" alt="Cs-Buy logo" width="150" displey="flex" justify-content="center"  style="vertical-align: middle;">
-
+</p>
 # Tecnologies
+
 - React <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="14" alt="React" style="vertical-align: middle;">
 - Node.js <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" width="14" alt="Node.js" style="vertical-align: middle;">
 - Next.js <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" width="15" top="5" alt="Next.js" style="vertical-align: middle;">
