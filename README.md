@@ -4,15 +4,15 @@
 <p align="center">
 <img src="https://cs-buy-api.onrender.com/assets/icons/logo.svg" alt="Cs-Buy logo" width="150" displey="flex" justify-content="center"  style="vertical-align: middle;">
 </p>
-# Tecnologies
-
+<h2 align="center">Technologies</h2>
 - React <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="14" alt="React" style="vertical-align: middle;">
 - Node.js <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" width="14" alt="Node.js" style="vertical-align: middle;">
 - Next.js <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" width="15" top="5" alt="Next.js" style="vertical-align: middle;">
-## Frameworks
+
+<h2 align="center">Frameworks</h2>
 - Tailwind, Fastify, Socket.io, Jwt, Sql12, Crypto, Typescript, Jest
 
-# Testing
+<h2 align="center">Testing</h2>
 - I implemented **Jest** for testing
 
 ## Sobre mi
