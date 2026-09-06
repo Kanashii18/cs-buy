@@ -73,8 +73,7 @@ Backend
 
 ##  About me 
 
-- i've been working with the project 1 year and 5 months aprox, it started as a concept and along the way i researched to choose the best stack posibile
-- and studied them.
+- i've been working with the project 1 year and 5 months aprox, it started as a concept and along the way i researched to choose the best stack posibile and studied them.
 - 
 - Feel free wht asking me something, i love speak and help ^^. I’m passionate about programming. To me, it’s more than just code; it’s an art.
 
